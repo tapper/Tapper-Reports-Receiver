@@ -1,0 +1,16 @@
+blib*
+Makefile
+Makefile.old
+Build
+_build*
+pm_to_blib*
+*.tar.gz
+.lwpcookies
+Artemis-*
+cover_db
+MANIFEST.bak
+artemis_schema_testsdb_testdb.sqlite
+artemis_schema_testrundb_test.sqlite
+artemis_schema_reportsdb_test.sqlite
+artemis_testrundb_development.sqlite
+artemis_reportsdb_development.sqlite
