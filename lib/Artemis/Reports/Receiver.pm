@@ -87,7 +87,7 @@ OSRC SysInt Team, C<< <osrc-sysint at elbe.amd.com> >>
 
 Copyright 2008 OSRC SysInt Team, all rights reserved.
 
-This program is released under the following license: restricted
+This program is released under the following license: restrictive
 
 
 =cut

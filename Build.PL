@@ -5,7 +5,7 @@ use Module::Build;
 my $builder = Module::Build->new
     (
      module_name         => 'Artemis::Reports::Receiver',
-     license             => 'restricted',
+     license             => 'restrictive',
      dist_author         => 'OSRC SysInt Team <osrc-sysint@elbe.amd.com>',
      dist_version_from   => 'lib/Artemis/Reports/Receiver.pm',
      build_requires => {
