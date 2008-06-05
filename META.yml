@@ -1,0 +1,28 @@
+---
+name: Artemis-Reports-Receiver
+version: 2.01
+author:
+  - 'OSRC SysInt Team <osrc-sysint@elbe.amd.com>'
+abstract: Receive test reports
+license: restrictive
+requires:
+  Artemis::Config: 2.01
+  Artemis::Schema: 2.01
+  Cwd: 0
+  File::Basename: 0
+  File::Spec: 0
+  Module::Build: 0
+  Net::Server::PreForkSimple: 0
+  TAP::Parser: 0
+  Test::More: 0
+  perl: 5.010
+build_requires:
+  Test::More: 0
+provides:
+  Artemis::Reports::Receiver:
+    file: lib/Artemis/Reports/Receiver.pm
+    version: 2.01
+generated_by: Module::Build version 0.280801
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
