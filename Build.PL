@@ -12,7 +12,9 @@ my $builder = Module::Build->new
                         'Test::More' => 0,
                        },
      requires => {
-                  'perl'                       => 5.010,
+                  'perl'                       => '5.010',
+                  'Artemis::Config'            => '2.01',
+                  'Artemis::Schema'            => '2.01',
                   'Cwd'                        => 0,
                   'File::Basename'             => 0,
                   'File::Spec'                 => 0,
