@@ -6,12 +6,16 @@ use strict;
 our $VERSION = '2.01';
 
 use parent 'Net::Server::PreForkSimple';
+use Artemis::Model 'model';
 use TAP::Parser;
 
 sub start_new_report {
         my $self = shift;
+
+        my $report = model('ReportsDB')->resultset('Report')->new;
+
         $self->{report_id} = int rand(100);
-        return $self->{report_id};
+        return $report;
 }
 
 sub process_request
