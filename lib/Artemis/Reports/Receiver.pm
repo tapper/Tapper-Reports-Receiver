@@ -12,11 +12,9 @@ use TAP::Parser;
 sub start_new_report {
         my $self = shift;
 
-        my $report = model('ReportsDB')->resultset('Report')->new({
-                                                                   tap => '',
-                                                                  });
-        $report->insert;
-        $self->{report} = $report;
+        $self->{report} = model('ReportsDB')->resultset('Report')->new({ tap => '' });
+        $self->{report}->insert;
+        print STDERR "report_id ", $self->{report}->id, " ($$)\n";
 }
 
 sub process_request
@@ -61,12 +59,37 @@ sub parse_tap
 {
         my ($self) = shift;
 
+        # TODO: should use ::Aggregator
+
         my $parser = TAP::Parser->new({ tap => $self->{tap} });
+        $parser->run;
+
         while ( my $result = $parser->next ) {
                 print STDERR "______________\n";
-                print STDERR "  ", $result->type, "\n";
-                print STDERR "  ", $result->is_ok, "\n";
+                print STDERR "  type: ", $result->type, ", is_ok: ", $result->is_ok, "\n";
         }
+        my $planned = $parser->tests_planned;
+        my $passed  = $parser->passed;
+        my $failed  = $parser->failed;
+        print STDERR "planned: ", $planned, "\n";
+        print STDERR "passed:  ", $passed, "\n";
+        print STDERR "failed:  ", $failed, "\n";
+
+
+        if (not defined $planned and $passed and not $failed) {
+                $self->{report}->successgrade ( 'PASS' );
+        }
+        elsif ($failed) {
+                $self->{report}->successgrade ( 'FAIL' );
+        }
+        elsif ($planned == $passed) {
+                $self->{report}->successgrade ( 'PASS' );
+        }
+        elsif ($planned != $passed) {
+                $self->{report}->successgrade ( 'FAIL' );
+        }
+        $self->{report}->update;
+        print STDERR "  ", $self->{report}->successgrade, "\n";
 }
 
 sub post_process_request_hook

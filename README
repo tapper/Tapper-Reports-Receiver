@@ -25,27 +25,24 @@ Submit report
 * Manually:
 
     $ nc -q0 localhost 7357
-      OK 1 foo
-      OK 2 bar
-      OK 3 baz
+      ok 1 foo
+      ok 2 bar
+      ok 3 baz
       ^D
 
 
 * Simple scripted:
 
-    $ (echo "OK 1 foo" ; echo "OK 2 bar"; echo "OK 3 baz") |       nc -q0 localhost 7357
-    $ (echo "OK 1 foo" ; echo "OK 2 bar"; echo "OK 3 baz") | tee | nc -q0 localhost 7357
+    $ (echo "ok 1 foo" ; echo "ok 2 bar"; echo "ok 3 baz") | nc -q0 localhost 7357
 
 
 * Submit a TAP emitting testrun from a harness:
 
-    $ prove -vl t/artemis_schema_testrundb.t |       nc -q0 localhost 7357
-    $ prove -vl t/artemis_schema_testrundb.t | tee | nc -q0 localhost 7357
+    $ prove -vl t/artemis_schema_testrundb.t | nc -q0 localhost 7357
 
 
 * Submit a TAP emitting testrun without harness:
 
-    $ perl -Ilib t/artemis_schema_testrundb.t |       nc -q0 localhost 7357
-    $ perl -Ilib t/artemis_schema_testrundb.t | tee | nc -q0 localhost 7357
+    $ perl -Ilib t/artemis_schema_testrundb.t | nc -q0 localhost 7357
 
 
