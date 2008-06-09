@@ -12,7 +12,9 @@ use TAP::Parser;
 sub start_new_report {
         my $self = shift;
 
-        my $report = model('ReportsDB')->resultset('Report')->new;
+        my $report = model('ReportsDB')->resultset('Report')->new({
+                                                                   tap => '',
+                                                                  });
         $report->insert;
         $self->{report} = $report;
 }
@@ -51,8 +53,8 @@ sub write_tap_to_db
 {
         my ($self) = shift;
 
-        $report->tap( $self->{tap} );
-        $report->update;
+        $self->{report}->tap( $self->{tap} );
+        $self->{report}->update;
 }
 
 sub parse_tap
@@ -72,6 +74,7 @@ sub post_process_request_hook
         my ($self) = shift;
 
         $self->debug_print_raw_report();
+        $self->write_tap_to_db();
         $self->parse_tap();
 }
 

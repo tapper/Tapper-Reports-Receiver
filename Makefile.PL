@@ -6,7 +6,9 @@ WriteMakefile
           'PL_FILES' => {},
           'INSTALLDIRS' => 'site',
           'NAME' => 'Artemis::Reports::Receiver',
-          'EXE_FILES' => [],
+          'EXE_FILES' => [
+                           'bin/artemis-reports-receiver'
+                         ],
           'VERSION_FROM' => 'lib/Artemis/Reports/Receiver.pm',
           'PREREQ_PM' => {
                            'Artemis::Schema' => '2.01',
