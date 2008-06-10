@@ -21,7 +21,6 @@ my $builder = Module::Build->new
                   'Module::Build'              => 0,
                   'Net::Server::PreForkSimple' => 0,
                   'TAP::Parser'                => 0,
-                  'Test::More'                 => 0,
                  },
      add_to_cleanup      => [ 'Artemis-Reports-Receiver-*' ],
      create_makefile_pl  => 'traditional',

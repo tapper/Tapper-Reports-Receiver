@@ -76,7 +76,8 @@ sub parse_tap
         print STDERR "failed:  ", $failed, "\n";
 
 
-        if (not defined $planned and $passed and not $failed) {
+        if (not defined $planned and $passed and not $failed)
+        {
                 $self->{report}->successgrade ( 'PASS' );
         }
         elsif ($failed) {
