@@ -1,0 +1,7 @@
+Artemis-Reports-Receiver-*.*.tar.gz
+Artemis-Reports-Receiver-*.*
+_build
+blib
+^Build$
+MANIFEST.bak
+
