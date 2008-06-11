@@ -5,10 +5,15 @@ use warnings;
 
 use Artemis::Reports::Receiver;
 
+my $EUID = `id -u`; chomp $EUID;
+my $EGID = `id -g`; chomp $EGID;
+
 Artemis::Reports::Receiver->run(
                                 port         => 7357,
                                 log_level    => 2,
                                 max_servers  => 2,
                                 max_requests => 2,
+                                user         => $EUID,
+                                group        => $EGID,
                                );
 
