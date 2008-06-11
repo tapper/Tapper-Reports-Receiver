@@ -1,5 +1,5 @@
 Artemis-Reports-Receiver-*.*.tar.gz
-Artemis-Reports-Receiver-*.*
+^Artemis-Reports-Receiver-*.*$
 _build
 blib
 ^Build$
