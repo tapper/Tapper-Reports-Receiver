@@ -13,6 +13,7 @@ WriteMakefile
           'PREREQ_PM' => {
                            'Artemis::Schema' => '2.01',
                            'File::Spec' => 0,
+                           'Artemis::Test' => 0,
                            'TAP::Parser' => 0,
                            'Artemis::Config' => '2.01',
                            'Net::Server::PreForkSimple' => 0,

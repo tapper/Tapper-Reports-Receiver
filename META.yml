@@ -16,6 +16,7 @@ requires:
   TAP::Parser: 0
   perl: 5.010
 build_requires:
+  Artemis::Test: 0
   Test::More: 0
 provides:
   Artemis::Reports::Receiver:

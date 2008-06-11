@@ -17,7 +17,7 @@ sub start_new_report {
 
         $self->{report} = model('ReportsDB')->resultset('Report')->new({ tap => '' });
         $self->{report}->insert;
-        print STDERR "report_id ", $self->{report}->id, " ($$)\n";
+#         print STDERR "report_id ", $self->{report}->id, " ($$)\n";
 }
 
 sub process_request
@@ -40,60 +40,12 @@ sub process_request
         # client side, this point here is never reached.
 }
 
-sub debug_print_raw_report
-{
-        my ($self) = shift;
-
-        print STDERR "\n-----------------------------\n";
-        print STDERR "TAP for report_id ", $self->{report}->id, " ($$)\n";
-        print STDERR $self->{tap};
-        print STDERR "-----------------------------\n";
-}
-
 sub write_tap_to_db
 {
         my ($self) = shift;
 
         $self->{report}->tap( $self->{tap} );
         $self->{report}->update;
-}
-
-sub parse_tap_
-{
-        my ($self) = shift;
-
-        # TODO: should use ::Aggregator, or ::Harness
-
-        my $parser = TAP::Parser->new({ tap => $self->{tap} });
-        $parser->run;
-
-        while ( my $result = $parser->next ) {
-                print STDERR "______________\n";
-                print STDERR "  type: ", $result->type, ", is_ok: ", $result->is_ok, "\n";
-        }
-        my $planned = $parser->tests_planned;
-        my $passed  = $parser->passed;
-        my $failed  = $parser->failed;
-        print STDERR "planned: ", $planned, "\n";
-        print STDERR "passed:  ", $passed,  "\n";
-        print STDERR "failed:  ", $failed,  "\n";
-
-
-        if (not defined $planned and $passed and not $failed)
-        {
-                $self->{report}->successgrade ( 'PASS' );
-        }
-        elsif ($failed) {
-                $self->{report}->successgrade ( 'FAIL' );
-        }
-        elsif ($planned == $passed) {
-                $self->{report}->successgrade ( 'PASS' );
-        }
-        elsif ($planned != $passed) {
-                $self->{report}->successgrade ( 'FAIL' );
-        }
-        $self->{report}->update;
-        print STDERR "  ", $self->{report}->successgrade, "\n";
 }
 
 sub get_suite {
@@ -155,13 +107,13 @@ sub parse_tap
                     ( $looks_like_prove_output and $raw =~ $re_prove_section )
                    )
                 {
-                        #print STDERR "  cond 1\n" if ( $i == 0 );
-                        #print STDERR "  cond 2\n" if ( not $looks_like_prove_output and $is_plan );
-                        #print STDERR "  cond 3\n" if ( $looks_like_prove_output and $raw =~ $re_prove_section );
+                        # print STDERR "  cond 1\n" if ( $i == 0 );
+                        # print STDERR "  cond 2\n" if ( not $looks_like_prove_output and $is_plan );
+                        # print STDERR "  cond 3\n" if ( $looks_like_prove_output and $raw =~ $re_prove_section );
 
-                        print STDERR "    new TAP section ", $line->raw, "\n";
+                        # print STDERR "    new TAP section ", $line->raw, "\n";
                         if (keys %section) {
-                                print STDERR "    push TAP section\n";
+                                # print STDERR "    push TAP section\n";
                                 push @tap_sections, { %section };
                         }
                         %section = ();
@@ -179,7 +131,7 @@ sub parse_tap
                 if ( $is_unknown and $raw =~ $re_prove_section )
                 {
                         $section{section} //= $1;
-                        print STDERR "  ", $section{section}, "\n";
+                        #print STDERR "  ", $section{section}, "\n";
                 }
 
                 # Artemis meta line
@@ -190,25 +142,23 @@ sub parse_tap
                         $val =~ s/^\s+//;
                         $val =~ s/\s+$//;
                         $meta{$key} = $val;
-                        print STDERR "      Artemis meta [$key:$val]\n";
+                        #print STDERR "      Artemis meta [$key:$val]\n";
                 }
 
                 $i++;
         }
         # store last section
-        print STDERR "    push TAP section ", $section{section},"\n";
+        #print STDERR "    push TAP section ", $section{section},"\n";
         push @tap_sections, { %section } if keys %section;
 
         # augment section names
         for (my $i = 0; $i < @tap_sections; $i++) {
                 $tap_sections[$i]->{section} //= "report-$i";
         }
-
-        print STDERR "________________________________ Suite: ",($meta{'suite-name'} || ''), "\n";
-        #print STDERR Dumper(\@tap_sections);
-        print STDERR Dumper(\%meta);
-        print STDERR "________________________________\n";
-        print STDERR "  $_\n" foreach map { $_->{section} } @tap_sections;
+        # print STDERR Dumper(\@tap_sections);
+        # print STDERR Dumper(\%meta);
+        # print STDERR "________________________________\n";
+        # print STDERR "  $_\n" foreach map { $_->{section} } @tap_sections;
 
         # aggregate
         my $aggregator = TAP::Parser::Aggregator->new;
@@ -223,10 +173,10 @@ sub parse_tap
         my $passed  = $aggregator->passed;
         my $failed  = $aggregator->failed;
         my $status  = $aggregator->get_status;
-        print STDERR "passed:  ", $passed, "\n";
-        print STDERR "failed:  ", $failed, "\n";
-        print STDERR "status:  ", $status, "\n";
 
+        # print STDERR "passed:  ", $passed, "\n";
+        # print STDERR "failed:  ", $failed, "\n";
+        # print STDERR "status:  ", $status, "\n";
 
         $self->{report}->successgrade ( $status );
         $self->{report}->suite_id ( $self->get_suite($meta{'suite-name'}, $meta{'suite-type'})->id );
@@ -257,14 +207,19 @@ sub parse_tap
         }
 
         $self->{report}->update;
-        print STDERR "  ", $self->{report}->successgrade, "\n";
+        say STDERR "Report: ", join(", ",
+                                    $self->{report}->id,
+                                    $self->{report}->successgrade,
+                                    $meta{'suite-name'},
+                                   );
+        say STDERR "        ", $_->{section} foreach @tap_sections;
+        say STDERR "        ", ;
 }
 
 sub post_process_request_hook
 {
         my ($self) = shift;
 
-        $self->debug_print_raw_report();
         $self->write_tap_to_db();
         $self->parse_tap();
 }
