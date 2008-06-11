@@ -9,7 +9,8 @@ my $builder = Module::Build->new
      dist_author         => 'OSRC SysInt Team <osrc-sysint@elbe.amd.com>',
      dist_version_from   => 'lib/Artemis/Reports/Receiver.pm',
      build_requires => {
-                        'Test::More' => 0,
+                        'Test::More'    => 0,
+                        'Artemis::Test' => 0,
                        },
      requires => {
                   'perl'                       => '5.010',
