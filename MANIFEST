@@ -10,5 +10,6 @@ MANIFEST.SKIP
 META.yml
 README
 scripts/dist_upload_wotan.sh
+SPEC
 t/00-load.t
 t/boilerplate.t
