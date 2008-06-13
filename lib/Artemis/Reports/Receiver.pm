@@ -11,7 +11,7 @@ use Data::Dumper;
 use YAML::Syck;
 use TAP::Parser;
 use TAP::Parser::Aggregator;
-use Artemis::Reports::Receiver::Harness;
+use Artemis::TAP::Harness;
 use Artemis::Model 'model';
 
 sub start_new_report {
@@ -107,7 +107,7 @@ sub post_process_request_hook
 
         $self->write_tap_to_db();
 
-        my $harness = new Artemis::Reports::Receiver::Harness( tap => $self->{tap} );
+        my $harness = new Artemis::TAP::Harness( tap => $self->{tap} );
         $harness->evaluate_report();
         $self->update_parsed_report_in_db( $harness->parsed_report );
 
