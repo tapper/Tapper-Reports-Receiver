@@ -6,11 +6,13 @@ use warnings;
 our $VERSION = '2.01';
 
 use parent 'Net::Server::PreForkSimple';
-use Artemis::Model 'model';
+
+use Data::Dumper;
+use YAML::Syck;
 use TAP::Parser;
 use TAP::Parser::Aggregator;
-use YAML::Syck;
-use Data::Dumper;
+use Artemis::Reports::Receiver::Harness;
+use Artemis::Model 'model';
 
 sub start_new_report {
         my $self = shift;
@@ -66,154 +68,37 @@ sub get_suite {
 }
 
 # parse the TAP, might be already processed and augmented TAP from "prove"
-sub parse_tap
+
+
+sub update_parsed_report_in_db
 {
-        my ($self) = shift;
+        my ($self, $parsed_report) = shift;
 
-        my @tap_sections = ();
+        # lookup missing values in db
+        $parsed_report->{db_meta}{suite_id} = $self->get_suite($parsed_report->{report_meta}{'suite-name'},
+                                                               $parsed_report->{report_meta}{'suite-type'}
+                                                              )->id;
 
-        my $parser = TAP::Parser->new({ tap => $self->{tap} });
-
-
-        my $i = 0;
-        my %section;
-        my $looks_like_prove_output = 0;
-        my $re_prove_section = qr/^([-_\d\w\/.]*\w)\.+$/;
-        my $re_artemis_meta  = qr/^#\s*(Artemis-)([-\w]+):(.+)$/i;
-        my %meta = (
-                    'suite-name' => 'unknown',
-                    'suite-type' => 'unknown',
-                   );
-
-        while ( my $line = $parser->next ) {
-
-                my $raw        = $line->raw;
-                my $is_plan    = $line->is_plan;
-                my $is_unknown = $line->is_unknown;
-
-                # print STDERR "  looks_like_prove_output: $looks_like_prove_output ($is_unknown): $raw\n";
-
-                if ( $is_unknown and $raw =~ $re_prove_section ) {
-                        # print STDERR "  SET looks_like_prove_output\n";
-                        $looks_like_prove_output ||= 1;
-                }
-
-                # ----- store previous section, start new section -----
-
-                # start new section
-                if (
-                    $i == 0 or
-                    ( not $looks_like_prove_output and $is_plan ) or
-                    ( $looks_like_prove_output and $raw =~ $re_prove_section )
-                   )
-                {
-                        # print STDERR "  cond 1\n" if ( $i == 0 );
-                        # print STDERR "  cond 2\n" if ( not $looks_like_prove_output and $is_plan );
-                        # print STDERR "  cond 3\n" if ( $looks_like_prove_output and $raw =~ $re_prove_section );
-
-                        # print STDERR "    new TAP section ", $line->raw, "\n";
-                        if (keys %section) {
-                                # print STDERR "    push TAP section\n";
-                                push @tap_sections, { %section };
-                        }
-                        %section = ();
-                }
-
-
-                # ----- extract some meta information -----
-
-                # a normal TAP line and not a summary line from "prove"
-                if ( not $is_unknown and not ($looks_like_prove_output and $raw =~ /^ok$/) ) {
-                        $section{raw} .= "$raw\n";
-                }
-
-                # looks like filename line from "prove"
-                if ( $is_unknown and $raw =~ $re_prove_section )
-                {
-                        $section{section} //= $1;
-                        #print STDERR "  ", $section{section}, "\n";
-                }
-
-                # Artemis meta line
-                if ( $line->is_comment and $raw =~ $re_artemis_meta )
-                {
-                        my $key = lc $2;
-                        my $val = $3;
-                        $val =~ s/^\s+//;
-                        $val =~ s/\s+$//;
-                        $meta{$key} = $val;
-                        #print STDERR "      Artemis meta [$key:$val]\n";
-                }
-
-                $i++;
-        }
-        # store last section
-        #print STDERR "    push TAP section ", $section{section},"\n";
-        push @tap_sections, { %section } if keys %section;
-
-        # augment section names
-        for (my $i = 0; $i < @tap_sections; $i++) {
-                $tap_sections[$i]->{section} //= "report-$i";
-        }
-        # print STDERR Dumper(\@tap_sections);
-        # print STDERR Dumper(\%meta);
-        # print STDERR "________________________________\n";
-        # print STDERR "  $_\n" foreach map { $_->{section} } @tap_sections;
-
-        # aggregate
-        my $aggregator = TAP::Parser::Aggregator->new;
-        $aggregator->start;
-        foreach my $section (@tap_sections) {
-                my $parser = TAP::Parser->new({ tap => $section->{raw} });
-                $parser->run;
-                $aggregator->add( $section->{section} => $parser );
-        }
-        $aggregator->stop;
-
-        my $passed  = $aggregator->passed;
-        my $failed  = $aggregator->failed;
-        my $status  = $aggregator->get_status;
-
-        # print STDERR "passed:  ", $passed, "\n";
-        # print STDERR "failed:  ", $failed, "\n";
-        # print STDERR "status:  ", $status, "\n";
-
-        $self->{report}->successgrade ( $status );
-        $self->{report}->suite_id ( $self->get_suite($meta{'suite-name'}, $meta{'suite-type'})->id );
-
-        my @allowed_keys = qw/machine-name
-                              machine-description
-                              ram cpuinfo
-                              lspci
-                              uname
-                              osname
-                              language-description
-                              xen-changeset
-                              starttime-test-program
-                              duration
-                              xen-dom0-kernel
-                              xen-base-os-description
-                              xen-guests-description
-                              flags
-                              reportcomment
-                             /;
-        foreach my $key (@allowed_keys)
+        foreach (keys %{$parsed_report->{db_meta}})
         {
                 no strict 'refs';
-                my $value = $meta{$key};
-                my $accessor = $key;
-                $accessor =~ s/-/_/g;
-                $self->{report}->$accessor( $value ) if defined $value;
+                my $value = $parsed_report->{db_meta}->{$_};
+                $self->{report}->$_ ($value) if defined $value;
         }
-
         $self->{report}->update;
+}
+
+sub _print_report
+{
+        my ($self, $parsed_report) = @_;
+
         say STDERR "Report: ", join(", ",
                                     $self->{report}->id,
                                     $self->{report}->successgrade,
-                                    $meta{'suite-name'},
+                                    $parsed_report->{report_meta}{'suite-name'}."-".$parsed_report->{report_meta}{'suite-version'},
                                    );
-        say STDERR "        ", $_->{section} foreach @tap_sections;
-        say STDERR "        ", ;
+        say STDERR "        ", $_->{section} foreach @{$parsed_report->{tap_sections}};
+        say STDERR "";
 }
 
 sub post_process_request_hook
@@ -221,7 +106,12 @@ sub post_process_request_hook
         my ($self) = shift;
 
         $self->write_tap_to_db();
-        $self->parse_tap();
+
+        my $harness = new Artemis::Reports::Receiver::Harness( tap => $self->{tap} );
+        $harness->evaluate_report();
+        $self->update_parsed_report_in_db( $harness->parsed_report );
+
+        $self->_print_report($harness->parsed_report);
 }
 
 1;
