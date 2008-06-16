@@ -74,6 +74,8 @@ sub update_parsed_report_in_db
 {
         my ($self, $parsed_report) = @_;
 
+        no strict 'refs';
+
         # lookup missing values in db
         $parsed_report->{db_meta}{suite_id} = $self->get_suite($parsed_report->{report_meta}{'suite-name'},
                                                                $parsed_report->{report_meta}{'suite-type'}
@@ -82,13 +84,17 @@ sub update_parsed_report_in_db
         # meta keys
         foreach (keys %{$parsed_report->{db_meta}})
         {
-                no strict 'refs';
-                my $value = $parsed_report->{db_meta}->{$_};
+                my $value = $parsed_report->{db_meta}{$_};
                 $self->{report}->$_ ($value) if defined $value;
         }
 
-        # successgrade
-        $self->{report}->successgrade( $parsed_report->{successgrade} );
+        # success statistics
+        foreach (keys %{$parsed_report->{stats}})
+        {
+                my $value = $parsed_report->{stats}{$_};
+                $self->{report}->$_( $value ) if defined $value;
+        }
+
         $self->{report}->update;
 }
 
@@ -101,7 +107,7 @@ sub _print_report
                                     $self->{report}->successgrade,
                                     $parsed_report->{report_meta}{'suite-name'}."-".$parsed_report->{report_meta}{'suite-version'},
                                    );
-        say STDERR "        ", $_->{section} foreach @{$parsed_report->{tap_sections}};
+        say STDERR "        ", $_->{section_name} foreach @{$parsed_report->{tap_sections}};
         say STDERR "";
 }
 
