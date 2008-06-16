@@ -72,19 +72,23 @@ sub get_suite {
 
 sub update_parsed_report_in_db
 {
-        my ($self, $parsed_report) = shift;
+        my ($self, $parsed_report) = @_;
 
         # lookup missing values in db
         $parsed_report->{db_meta}{suite_id} = $self->get_suite($parsed_report->{report_meta}{'suite-name'},
                                                                $parsed_report->{report_meta}{'suite-type'}
                                                               )->id;
 
+        # meta keys
         foreach (keys %{$parsed_report->{db_meta}})
         {
                 no strict 'refs';
                 my $value = $parsed_report->{db_meta}->{$_};
                 $self->{report}->$_ ($value) if defined $value;
         }
+
+        # successgrade
+        $self->{report}->successgrade( $parsed_report->{successgrade} );
         $self->{report}->update;
 }
 
@@ -109,9 +113,11 @@ sub post_process_request_hook
 
         my $harness = new Artemis::TAP::Harness( tap => $self->{tap} );
         $harness->evaluate_report();
+
         $self->update_parsed_report_in_db( $harness->parsed_report );
 
-        $self->_print_report($harness->parsed_report);
+
+        $self->_print_report( $harness->parsed_report );
 }
 
 1;
