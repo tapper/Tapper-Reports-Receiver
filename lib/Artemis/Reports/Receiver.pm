@@ -54,7 +54,7 @@ sub get_suite {
         my ($self, $suite_name, $suite_type) = @_;
 
         $suite_name ||= 'unknown';
-        $suite_type ||= 'unknown';
+        $suite_type ||= 'software';
 
         my $suite = model("ReportsDB")->resultset('Suite')->search({name => $suite_name })->first;
         if (not $suite) {
@@ -67,8 +67,30 @@ sub get_suite {
         return $suite;
 }
 
-# parse the TAP, might be already processed and augmented TAP from "prove"
+sub create_report_sections
+{
+        my ($self, $parsed_report) = @_;
 
+        # meta keys
+        my $section_nr = 0;
+        foreach my $section ( @{$parsed_report->{tap_sections}} ) {
+                $section_nr++;
+                my $report_section = model('ReportsDB')->resultset('ReportSection')->new
+                    ({
+                      report_id  => $self->{report}->id,
+                      succession => $section_nr,
+                      name       => $section->{section_name},
+                     });
+
+                foreach (keys %{$section->{db_section_meta}})
+                {
+                        my $value = $section->{db_section_meta}{$_};
+                        $report_section->$_ ($value) if defined $value;
+                }
+
+                $report_section->insert;
+        }
+}
 
 sub update_parsed_report_in_db
 {
@@ -77,15 +99,15 @@ sub update_parsed_report_in_db
         no strict 'refs';
 
         # lookup missing values in db
-        $parsed_report->{db_meta}{suite_id} = $self->get_suite($parsed_report->{report_meta}{'suite-name'},
-                                                               $parsed_report->{report_meta}{'suite-type'}
-                                                              )->id;
+        $parsed_report->{db_report_meta}{suite_id} = $self->get_suite($parsed_report->{report_meta}{'suite-name'},
+                                                                      $parsed_report->{report_meta}{'suite-type'},
+                                                                     )->id;
 
-        # meta keys
-        foreach (keys %{$parsed_report->{db_meta}})
+        # report information
+        foreach (keys %{$parsed_report->{db_report_meta}})
         {
-                my $value = $parsed_report->{db_meta}{$_};
-                $self->{report}->$_ ($value) if defined $value;
+                my $value = $parsed_report->{db_report_meta}{$_};
+                $self->{report}->$_( $value ) if defined $value;
         }
 
         # success statistics
@@ -96,6 +118,9 @@ sub update_parsed_report_in_db
         }
 
         $self->{report}->update;
+
+        $self->create_report_sections($parsed_report);
+
 }
 
 sub _print_report
@@ -107,8 +132,15 @@ sub _print_report
                                     $self->{report}->successgrade,
                                     $parsed_report->{report_meta}{'suite-name'}."-".$parsed_report->{report_meta}{'suite-version'},
                                    );
-        say STDERR "        ", $_->{section_name} foreach @{$parsed_report->{tap_sections}};
-        say STDERR "";
+        foreach my $section (@{$parsed_report->{tap_sections}}) {
+                say STDERR "        ", $section->{section_name} ;
+
+                my $section_meta = $section->{db_section_meta};
+                foreach my $section_name (keys %$section_meta) {
+                        my $value = $section_meta->{$section_name};
+                        say STDERR "        - $section_name: $value";
+                }
+        }
 }
 
 sub post_process_request_hook
@@ -120,8 +152,8 @@ sub post_process_request_hook
         my $harness = new Artemis::TAP::Harness( tap => $self->{tap} );
         $harness->evaluate_report();
 
+        print STDERR "parsed_report: ", Dumper($harness->parsed_report);
         $self->update_parsed_report_in_db( $harness->parsed_report );
-
 
         $self->_print_report( $harness->parsed_report );
 }

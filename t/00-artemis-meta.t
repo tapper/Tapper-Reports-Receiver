@@ -5,5 +5,4 @@ use warnings;
 
 use Artemis::Test;
 
-artemis_test_meta();
-
+artemis_suite_meta();
