@@ -25,7 +25,6 @@ my $builder = Module::Build->new
                   'Cwd'                        => 0,
                  },
      add_to_cleanup      => [ 'Artemis-Reports-Receiver-*' ],
-     create_makefile_pl  => 'traditional',
     );
 
 $builder->create_build_script();
