@@ -16,6 +16,7 @@ WriteMakefile
                            'Artemis::Test' => 0,
                            'TAP::Parser' => 0,
                            'Artemis::Config' => '2.01',
+                           'Artemis::TAP::Harness' => 0,
                            'Net::Server::PreForkSimple' => 0,
                            'Test::More' => 0,
                            'Module::Build' => 0,
