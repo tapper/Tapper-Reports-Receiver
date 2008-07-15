@@ -10,13 +10,13 @@ my $builder = Module::Build->new
      dist_version_from   => 'lib/Artemis/Reports/Receiver.pm',
      build_requires => {
                         'Test::More'    => 0,
-                        'Artemis::Test' => 0,
+                        'Artemis::Test' => '2.010004',
                        },
      requires => {
                   'perl'                       => '5.010',
-                  'Artemis::Config'            => '2.01',
-                  'Artemis::Schema'            => '2.01',
-                  'Artemis::TAP::Harness'      => 0,
+                  'Artemis::Config'            => '2.010004',
+                  'Artemis::Schema'            => '2.010012',
+                  'Artemis::TAP::Harness'      => '2.010003',
                   'Net::Server::PreForkSimple' => 0,
                   'File::Basename'             => 0,
                   'Module::Build'              => 0,
