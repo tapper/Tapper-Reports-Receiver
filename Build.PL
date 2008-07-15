@@ -26,5 +26,4 @@ my $builder = Module::Build->new
                  },
      add_to_cleanup      => [ 'Artemis-Reports-Receiver-*' ],
     );
-
 $builder->create_build_script();
