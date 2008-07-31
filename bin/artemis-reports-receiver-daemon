@@ -7,6 +7,6 @@ use Artemis::Reports::Receiver::Daemon;
 
 my $receiver = new Artemis::Reports::Receiver::Daemon
     (
-     pidfile => '/tmp/artemis-reports-receiver_daemon.pid'
+     pidfile => '/tmp/artemis-reports-receiver-daemon.pid'
     );
 $receiver->run;

@@ -3,7 +3,7 @@ package Artemis::Reports::Receiver;
 use strict;
 use warnings;
 
-our $VERSION = '2.010002';
+our $VERSION = '2.010003';
 
 use parent 'Net::Server::PreForkSimple';
 
