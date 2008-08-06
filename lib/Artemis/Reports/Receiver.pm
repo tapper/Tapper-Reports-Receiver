@@ -3,7 +3,7 @@ package Artemis::Reports::Receiver;
 use strict;
 use warnings;
 
-our $VERSION = '2.010003';
+our $VERSION = '2.010004';
 
 use parent 'Net::Server::PreForkSimple';
 
@@ -150,6 +150,25 @@ sub post_process_request_hook
         $self->write_tap_to_db();
 
         my $harness = new Artemis::TAP::Harness( tap => $self->{tap} );
+        $harness->evaluate_report();
+
+        print STDERR "parsed_report: ", Dumper($harness->parsed_report);
+        $self->update_parsed_report_in_db( $harness->parsed_report );
+
+        $self->_print_report( $harness->parsed_report );
+}
+
+# Recalculates all DB data out of the TAP report. This may be used if
+# something went wrong but the report TAP is available or if things
+# have changed how info is extracted from the TAP.
+sub refresh_db_report
+{
+        my ($self) = shift;
+        my ($report_id) = @_;
+
+        my $report = model('ReportsDB')->resultset('Report')->find($report_id);
+
+        my $harness = new Artemis::TAP::Harness( tap => $report->tap );
         $harness->evaluate_report();
 
         print STDERR "parsed_report: ", Dumper($harness->parsed_report);
