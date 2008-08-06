@@ -13,6 +13,7 @@ use TAP::Parser;
 use TAP::Parser::Aggregator;
 use Artemis::TAP::Harness;
 use Artemis::Model 'model';
+use DateTime::Format::Natural;
 
 sub start_new_report {
         my $self = shift;
@@ -108,6 +109,13 @@ sub update_parsed_report_in_db
         {
                 my $value = $parsed_report->{db_report_meta}{$_};
                 $self->{report}->$_( $value ) if defined $value;
+        }
+
+        # report information - date fields
+        foreach (keys %{$parsed_report->{db_report_date_meta}})
+        {
+                my $value = $parsed_report->{db_report_date_meta}{$_};
+                $self->{report}->$_( DateTime::Format::Natural->new->parse_datetime($value ) ) if defined $value;
         }
 
         # success statistics
