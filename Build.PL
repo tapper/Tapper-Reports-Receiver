@@ -25,6 +25,7 @@ my $builder = Module::Build->new
                   'Net::Server::PreForkSimple' => 0,
                   'TAP::Parser'                => 0,
                   'DateTime::Format::Natural'  => 0,
+                  'DateTime::Format::Mail'     => 0,
                   'perl'                       => '5.010',
                  },
      add_to_cleanup      => [ 'Artemis-Reports-Receiver-*' ],
