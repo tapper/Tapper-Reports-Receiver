@@ -3,17 +3,18 @@
 use strict;
 use warnings;
 
+use Artemis::Config;
 use Artemis::Reports::Receiver;
 
+my $port = Artemis::Config->subconfig->{report_port};
 my $EUID = `id -u`; chomp $EUID;
 my $EGID = `id -g`; chomp $EGID;
 
 Artemis::Reports::Receiver->run(
-                                port         => 7357,
+                                port         => $port,
                                 log_level    => 2,
-                                max_servers  => 2,
-                                max_requests => 2,
+                                max_servers  => 100,
+                                max_requests => 100,
                                 user         => $EUID,
                                 group        => $EGID,
                                );
-

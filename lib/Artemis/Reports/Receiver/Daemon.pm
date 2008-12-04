@@ -5,14 +5,15 @@ use 5.010;
 use strict;
 use warnings;
 
+use Artemis::Config;
 use Artemis::Reports::Receiver;
 use Method::Signatures;
 use Moose;
 
 with 'MooseX::Daemonize';
 
-has server => (is => 'rw');
-has port   => (is => 'rw', isa => 'Int', default => 7357);
+has server => ( is => 'rw');
+has port   => ( is => 'rw', isa => 'Int', default => sub { Artemis::Config->subconfig->{report_port} } );
 
 after start => sub {
                     my $self = shift;
@@ -31,8 +32,8 @@ method initialize_server
         Artemis::Reports::Receiver->run(
                                         port         => $self->port,
                                         log_level    => 2,
-                                        max_servers  => 20,
-                                        max_requests => 20,
+                                        max_servers  => 100,
+                                        max_requests => 100,
                                         user         => $EUID,
                                         group        => $EGID,
                                        );
