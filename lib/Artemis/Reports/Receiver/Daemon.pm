@@ -31,8 +31,8 @@ method initialize_server
         Artemis::Reports::Receiver->run(
                                         port         => $self->port,
                                         log_level    => 2,
-                                        max_servers  => 2,
-                                        max_requests => 2,
+                                        max_servers  => 20,
+                                        max_requests => 20,
                                         user         => $EUID,
                                         group        => $EGID,
                                        );
