@@ -3,7 +3,7 @@ package Artemis::Reports::Receiver;
 use strict;
 use warnings;
 
-our $VERSION = '2.010007';
+our $VERSION = '2.010008';
 
 use parent 'Net::Server::PreForkSimple';
 
@@ -93,6 +93,36 @@ sub create_report_sections
         }
 }
 
+sub create_report_groups
+{
+        my ($self, $parsed_report) = @_;
+
+        my ($reportgroup_arbitrary, $reportgroup_testrun) = (
+                                                             $parsed_report->{db_report_reportgroup_meta}{reportgroup_arbitrary},
+                                                             $parsed_report->{db_report_reportgroup_meta}{reportgroup_testrun},
+                                                            );
+
+        if ($reportgroup_arbitrary and $reportgroup_arbitrary ne 'None') {
+                my $reportgroup = model('ReportsDB')->resultset('ReportgroupArbitrary')->new
+                    ({
+                      arbitrary_id => $reportgroup_arbitrary,
+                      report_id    => $self->{report}->id,
+                     });
+                $reportgroup->insert;
+                print STDERR "inserted reportgroup_arbitrary: $reportgroup_arbitrary\n";
+        }
+
+        if ($reportgroup_testrun and $reportgroup_testrun ne 'None') {
+                my $reportgroup = model('ReportsDB')->resultset('ReportgroupTestrun')->new
+                    ({
+                      testrun_id => $reportgroup_testrun,
+                      report_id    => $self->{report}->id,
+                     });
+                $reportgroup->insert;
+                print STDERR "inserted reportgroup_testrun: $reportgroup_testrun\n";
+        }
+}
+
 sub update_parsed_report_in_db
 {
         my ($self, $parsed_report) = @_;
@@ -128,6 +158,7 @@ sub update_parsed_report_in_db
         $self->{report}->update;
 
         $self->create_report_sections($parsed_report);
+        $self->create_report_groups($parsed_report);
 
 }
 
