@@ -3,9 +3,9 @@ package Artemis::Reports::Receiver;
 use strict;
 use warnings;
 
-our $VERSION = '2.010009';
+our $VERSION = '2.010010';
 
-use parent 'Net::Server::PreForkSimple';
+use parent 'Net::Server::Fork';
 
 use Data::Dumper;
 use YAML::Syck;
@@ -18,7 +18,17 @@ use DateTime::Format::Natural;
 sub start_new_report {
         my $self = shift;
 
-        $self->{report} = model('ReportsDB')->resultset('Report')->new({ tap => '' });
+        $self->{$_} = $self->get_property($_) foreach qw(peeraddr peerport peerhost);
+        print STDERR "peeraddr: ", $self->{peeraddr};
+        print STDERR "peerport: ", $self->{peerport};
+        print STDERR "peerhost: ", $self->{peerhost};
+
+        $self->{report} = model('ReportsDB')->resultset('Report')->new({
+                                                                        tap      => '',
+                                                                        peeraddr => $self->{peeraddr},
+                                                                        peerport => $self->{peerport},
+                                                                        peerhost => $self->{peerhost},
+                                                                       });
         $self->{report}->insert;
 #         print STDERR "report_id ", $self->{report}->id, " ($$)\n";
 }
