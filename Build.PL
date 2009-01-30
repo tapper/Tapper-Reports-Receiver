@@ -14,8 +14,8 @@ my $builder = Module::Build->new
                        },
      requires => {
                   'Artemis::Config'            => '2.010004',
-                  'Artemis::Schema'            => '2.010018',
-                  'Artemis::TAP::Harness'      => '2.010003',
+                  'Artemis::Schema'            => '2.010024',
+                  'Artemis::TAP::Harness'      => '2.010016',
                   'Cwd'                        => 0,
                   'File::Basename'             => 0,
                   'File::Spec'                 => 0,
