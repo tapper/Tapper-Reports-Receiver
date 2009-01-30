@@ -107,16 +107,21 @@ sub create_report_groups
 {
         my ($self, $parsed_report) = @_;
 
-        my ($reportgroup_arbitrary, $reportgroup_testrun) = (
-                                                             $parsed_report->{db_report_reportgroup_meta}{reportgroup_arbitrary},
-                                                             $parsed_report->{db_report_reportgroup_meta}{reportgroup_testrun},
-                                                            );
+        my ($reportgroup_arbitrary,
+            $reportgroup_testrun,
+            $reportgroup_primary
+           ) = (
+                $parsed_report->{db_report_reportgroup_meta}{reportgroup_arbitrary},
+                $parsed_report->{db_report_reportgroup_meta}{reportgroup_testrun},
+                $parsed_report->{db_report_reportgroup_meta}{reportgroup_primary},
+               );
 
         if ($reportgroup_arbitrary and $reportgroup_arbitrary ne 'None') {
                 my $reportgroup = model('ReportsDB')->resultset('ReportgroupArbitrary')->new
                     ({
-                      arbitrary_id => $reportgroup_arbitrary,
-                      report_id    => $self->{report}->id,
+                      report_id     => $self->{report}->id,
+                      arbitrary_id  => $reportgroup_arbitrary,
+                      primaryreport => $reportgroup_primary,
                      });
                 $reportgroup->insert;
                 print STDERR "inserted reportgroup_arbitrary: $reportgroup_arbitrary\n";
@@ -125,8 +130,9 @@ sub create_report_groups
         if ($reportgroup_testrun and $reportgroup_testrun ne 'None') {
                 my $reportgroup = model('ReportsDB')->resultset('ReportgroupTestrun')->new
                     ({
-                      testrun_id => $reportgroup_testrun,
-                      report_id    => $self->{report}->id,
+                      report_id     => $self->{report}->id,
+                      testrun_id    => $reportgroup_testrun,
+                      primaryreport => $reportgroup_primary,
                      });
                 $reportgroup->insert;
                 print STDERR "inserted reportgroup_testrun: $reportgroup_testrun\n";
