@@ -188,12 +188,12 @@ sub _print_report
                                     $parsed_report->{report_meta}{'suite-name'}."-".$parsed_report->{report_meta}{'suite-version'},
                                    );
         foreach my $section (@{$parsed_report->{tap_sections}}) {
-                say STDERR "        ", $section->{section_name} ;
+                say STDERR "        ", $section->{section_name};
 
                 my $section_meta = $section->{db_section_meta};
-                foreach my $section_name (keys %$section_meta) {
-                        my $value = $section_meta->{$section_name};
-                        say STDERR "        - $section_name: $value";
+                foreach my $section_key (keys %$section_meta) {
+                        my $value = $section_meta->{$section_key};
+                        say STDERR "        - $section_key: $value";
                 }
         }
 }

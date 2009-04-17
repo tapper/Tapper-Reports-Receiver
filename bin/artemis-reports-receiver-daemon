@@ -12,4 +12,5 @@ my $receiver = new Artemis::Reports::Receiver::Daemon
     (
      pidfile => '/tmp/artemis-reports-receiver-daemon.pid'
     );
+
 $receiver->run;
