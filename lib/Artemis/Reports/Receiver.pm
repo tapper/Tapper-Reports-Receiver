@@ -9,8 +9,6 @@ use parent 'Net::Server::Fork';
 
 use Data::Dumper;
 use YAML::Syck;
-use TAP::Parser;
-use TAP::Parser::Aggregator;
 use Artemis::TAP::Harness;
 use Artemis::Model 'model';
 use DateTime::Format::Natural;
