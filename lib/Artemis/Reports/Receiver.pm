@@ -1,5 +1,6 @@
 package Artemis::Reports::Receiver;
 
+use 5.010;
 use strict;
 use warnings;
 
@@ -17,9 +18,9 @@ sub start_new_report {
         my $self = shift;
 
         $self->{$_} = $self->get_property($_) foreach qw(peeraddr peerport peerhost);
-        print STDERR "peeraddr: ", $self->{peeraddr};
-        print STDERR "peerport: ", $self->{peerport};
-        print STDERR "peerhost: ", $self->{peerhost};
+        say STDERR "peeraddr: ", $self->{peeraddr};
+        say STDERR "peerport: ", $self->{peerport};
+        say STDERR "peerhost: ", $self->{peerhost};
 
         $self->{report} = model('ReportsDB')->resultset('Report')->new({
                                                                         tap      => '',
