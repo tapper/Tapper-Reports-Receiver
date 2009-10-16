@@ -142,7 +142,6 @@ sub create_report_comment
 {
         my ($self, $parsed_report) = @_;
 
-        say STDERR "*** create_report_comment.report: ", Dumper($parsed_report);
         my ($comment) = ( $parsed_report->{db_report_reportcomment_meta}{reportcomment} );
         if ($comment) {
                 my $reportcomment = model('ReportsDB')->resultset('ReportComment')->new
