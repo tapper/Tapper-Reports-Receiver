@@ -138,6 +138,24 @@ sub create_report_groups
         }
 }
 
+sub create_report_comment
+{
+        my ($self, $parsed_report) = @_;
+
+        say STDERR "*** create_report_comment.report: ", Dumper($parsed_report);
+        my ($comment) = ( $parsed_report->{db_report_reportcomment_meta}{reportcomment} );
+        if ($comment) {
+                my $reportcomment = model('ReportsDB')->resultset('ReportComment')->new
+                    ({
+                      report_id  => $self->{report}->id,
+                      comment    => $comment,
+                      succession => 1,
+                     });
+                $reportcomment->insert;
+                print STDERR "inserted reportcomment: $comment\n";
+        }
+}
+
 sub update_parsed_report_in_db
 {
         my ($self, $parsed_report) = @_;
@@ -174,6 +192,7 @@ sub update_parsed_report_in_db
 
         $self->create_report_sections($parsed_report);
         $self->create_report_groups($parsed_report);
+        $self->create_report_comment($parsed_report);
 
 }
 
