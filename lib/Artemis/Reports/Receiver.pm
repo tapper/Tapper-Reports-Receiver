@@ -102,6 +102,19 @@ sub create_report_sections
         }
 }
 
+sub update_reportgroup_testrun_stats
+{
+        my ($self, $testrun_id) = @_;
+
+        my $reportgroupstats = model('ReportsDB')->resultset('ReportgroupTestrunStats')->find($testrun_id);
+        if (not $reportgroupstats->testrun_id) {
+                $reportgroupstats->new({ testrun_id => $testrun_id })->insert;
+        }
+
+        $reportgroupstats->update_failed_passed;
+        $reportgroupstats->update;
+}
+
 sub create_report_groups
 {
         my ($self, $parsed_report) = @_;
@@ -135,6 +148,8 @@ sub create_report_groups
                      });
                 $reportgroup->insert;
                 print STDERR "inserted reportgroup_testrun: $reportgroup_testrun\n";
+
+                $self->update_reportgroup_testrun_stats($reportgroup_testrun);
         }
 }
 
