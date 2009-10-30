@@ -107,8 +107,9 @@ sub update_reportgroup_testrun_stats
         my ($self, $testrun_id) = @_;
 
         my $reportgroupstats = model('ReportsDB')->resultset('ReportgroupTestrunStats')->find($testrun_id);
-        if (not $reportgroupstats->testrun_id) {
-                $reportgroupstats->new({ testrun_id => $testrun_id })->insert;
+        unless ($reportgroupstats and $reportgroupstats->testrun_id) {
+                $reportgroupstats = model('ReportsDB')->resultset('ReportgroupTestrunStats')->new({ testrun_id => $testrun_id });
+                $reportgroupstats->insert;
         }
 
         $reportgroupstats->update_failed_passed;
