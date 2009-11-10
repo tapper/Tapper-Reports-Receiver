@@ -8,8 +8,8 @@ our $VERSION = '2.010015';
 
 use parent 'Net::Server::Fork';
 
-use Data::Dumper;
 use YAML::Syck;
+use Data::Dumper;
 use Artemis::TAP::Harness;
 use Artemis::Model 'model';
 use DateTime::Format::Natural;
@@ -71,6 +71,7 @@ sub get_suite {
                 $suite = model("ReportsDB")->resultset('Suite')->new({
                                                                       name => $suite_name,
                                                                       type => $suite_type,
+                                                                      description => "$suite_name test suite",
                                                                      });
                 $suite->insert;
         }
@@ -178,9 +179,11 @@ sub update_parsed_report_in_db
         no strict 'refs';
 
         # lookup missing values in db
+        print STDERR "report_meta: ", Dumper($parsed_report->{report_meta});
         $parsed_report->{db_report_meta}{suite_id} = $self->get_suite($parsed_report->{report_meta}{'suite-name'},
                                                                       $parsed_report->{report_meta}{'suite-type'},
                                                                      )->id;
+        print STDERR "db_report_meta: ", Dumper($parsed_report->{db_report_meta});
 
         # report information
         foreach (keys %{$parsed_report->{db_report_meta}})
@@ -254,9 +257,9 @@ sub refresh_db_report
         my ($self) = shift;
         my ($report_id) = @_;
 
-        my $report = model('ReportsDB')->resultset('Report')->find($report_id);
+        $self->{report} = model('ReportsDB')->resultset('Report')->find($report_id);
 
-        my $harness = new Artemis::TAP::Harness( tap => $report->tap );
+        my $harness = new Artemis::TAP::Harness( tap => $self->{report}->tap );
         $harness->evaluate_report();
 
         print STDERR "parsed_report: ", Dumper($harness->parsed_report);
