@@ -13,8 +13,8 @@ my $builder = Module::Build->new
                         'Artemis::Test' => '2.010004',
                        },
      requires => {
-                  'Artemis::Config'            => '2.010004',
-                  'Artemis::Schema'            => '2.010024',
+                  'Artemis::Config'            => '2.010055',
+                  'Artemis::Schema'            => '2.010065',
                   'Artemis::TAP::Harness'      => '2.010016',
                   'Cwd'                        => 0,
                   'File::Basename'             => 0,
