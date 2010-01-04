@@ -18,10 +18,6 @@ sub start_new_report {
         my $self = shift;
 
         $self->{$_} = $self->get_property($_) foreach qw(peeraddr peerport peerhost);
-        say STDERR "peeraddr: ", $self->{peeraddr};
-        say STDERR "peerport: ", $self->{peerport};
-        say STDERR "peerhost: ", $self->{peerhost};
-
         $self->{report} = model('ReportsDB')->resultset('Report')->new({
                                                                         tap      => '',
                                                                         peeraddr => $self->{peeraddr},
@@ -29,7 +25,6 @@ sub start_new_report {
                                                                         peerhost => $self->{peerhost},
                                                                        });
         $self->{report}->insert;
-#         print STDERR "report_id ", $self->{report}->id, " ($$)\n";
 }
 
 sub process_request
@@ -138,7 +133,6 @@ sub create_report_groups
                       primaryreport => $reportgroup_primary,
                      });
                 $reportgroup->insert;
-                print STDERR "inserted reportgroup_arbitrary: $reportgroup_arbitrary\n";
         }
 
         if ($reportgroup_testrun and $reportgroup_testrun ne 'None') {
@@ -149,7 +143,6 @@ sub create_report_groups
                       primaryreport => $reportgroup_primary,
                      });
                 $reportgroup->insert;
-                print STDERR "inserted reportgroup_testrun: $reportgroup_testrun\n";
 
                 $self->update_reportgroup_testrun_stats($reportgroup_testrun);
         }
@@ -168,7 +161,6 @@ sub create_report_comment
                       succession => 1,
                      });
                 $reportcomment->insert;
-                print STDERR "inserted reportcomment: $comment\n";
         }
 }
 
@@ -179,11 +171,9 @@ sub update_parsed_report_in_db
         no strict 'refs';
 
         # lookup missing values in db
-        print STDERR "report_meta: ", Dumper($parsed_report->{report_meta});
         $parsed_report->{db_report_meta}{suite_id} = $self->get_suite($parsed_report->{report_meta}{'suite-name'},
                                                                       $parsed_report->{report_meta}{'suite-type'},
                                                                      )->id;
-        print STDERR "db_report_meta: ", Dumper($parsed_report->{db_report_meta});
 
         # report information
         foreach (keys %{$parsed_report->{db_report_meta}})
@@ -218,6 +208,7 @@ sub _print_report
 {
         my ($self, $parsed_report) = @_;
 
+        # TODO: convert to log4perl
         say STDERR "Report: ", join(", ",
                                     $self->{report}->id,
                                     $self->{report}->successgrade,
@@ -243,7 +234,6 @@ sub post_process_request_hook
         my $harness = new Artemis::TAP::Harness( tap => $self->{tap} );
         $harness->evaluate_report();
 
-        print STDERR "parsed_report: ", Dumper($harness->parsed_report);
         $self->update_parsed_report_in_db( $harness->parsed_report );
 
         $self->_print_report( $harness->parsed_report );
@@ -262,7 +252,6 @@ sub refresh_db_report
         my $harness = new Artemis::TAP::Harness( tap => $self->{report}->tap );
         $harness->evaluate_report();
 
-        print STDERR "parsed_report: ", Dumper($harness->parsed_report);
         $self->update_parsed_report_in_db( $harness->parsed_report );
 
         $self->_print_report( $harness->parsed_report );
