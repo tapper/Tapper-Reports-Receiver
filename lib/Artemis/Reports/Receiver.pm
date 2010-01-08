@@ -7,6 +7,9 @@ use warnings;
 our $VERSION = '2.010017';
 
 use parent 'Net::Server::Fork';
+use Log::Log4perl;
+
+our $logger = Log::Log4perl->get_logger('artemis.reports.receiver');
 
 use YAML::Syck;
 use Data::Dumper;
@@ -36,7 +39,7 @@ sub process_request
         # closed at client side.
 
         $self->start_new_report;
-        print "Artemis::Reports::Receiver. Protocol is TAP. Your report id: ", $self->{report}->id, "\n";
+        $logger->info("Artemis::Reports::Receiver. Protocol is TAP. Your report id: ", $self->{report}->id);
 
         $self->{tap} = '';
         while (<STDIN>) {
@@ -209,18 +212,18 @@ sub _print_report
         my ($self, $parsed_report) = @_;
 
         # TODO: convert to log4perl
-        say STDERR "Report: ", join(", ",
-                                    $self->{report}->id,
-                                    $self->{report}->successgrade,
-                                    $parsed_report->{report_meta}{'suite-name'}."-".$parsed_report->{report_meta}{'suite-version'},
-                                   );
+        $logger->debug("Report: ", join(", ",
+                                        $self->{report}->id,
+                                        $self->{report}->successgrade,
+                                        $parsed_report->{report_meta}{'suite-name'}."-".$parsed_report->{report_meta}{'suite-version'},
+                                       ));
         foreach my $section (@{$parsed_report->{tap_sections}}) {
-                say STDERR "        ", $section->{section_name};
+                $logger->debug($section->{section_name});
 
                 my $section_meta = $section->{db_section_meta};
                 foreach my $section_key (keys %$section_meta) {
                         my $value = $section_meta->{$section_key};
-                        say STDERR "        - $section_key: $value";
+                        $logger->debug("        - $section_key: $value");
                 }
         }
 }
