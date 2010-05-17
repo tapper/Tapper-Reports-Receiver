@@ -16,3 +16,4 @@ artemis_testrundb_development.sqlite
 artemis_reportsdb_development.sqlite
 MANIFEST
 META.yml
+MYMETA.yml
