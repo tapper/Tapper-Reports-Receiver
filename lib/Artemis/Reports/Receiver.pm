@@ -8,8 +8,14 @@ our $VERSION = '2.010017';
 
 use parent 'Net::Server::Fork';
 use Log::Log4perl;
+use Artemis::Config;
+
+BEGIN {
+        Log::Log4perl::init(Artemis::Config->subconfig->{files}{log4perl_cfg});
+}
 
 our $logger = Log::Log4perl->get_logger('artemis.reports.receiver');
+
 
 use YAML::Syck;
 use Data::Dumper;
