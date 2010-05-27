@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '2.010017';
+our $VERSION = '2.010018';
 
 use parent 'Net::Server::Fork';
 use Log::Log4perl;

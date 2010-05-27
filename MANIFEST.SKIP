@@ -5,3 +5,4 @@ blib
 ^Build$
 MANIFEST.bak
 system_scripts
+^MYMETA.yml$
