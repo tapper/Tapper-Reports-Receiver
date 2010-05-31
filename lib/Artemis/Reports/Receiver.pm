@@ -45,7 +45,7 @@ sub process_request
         # closed at client side.
 
         $self->start_new_report;
-        $logger->info("Artemis::Reports::Receiver. Protocol is TAP. Your report id: ", $self->{report}->id);
+        print "Artemis::Reports::Receiver. Protocol is TAP. Your report id: ", $self->{report}->id, "\n";
 
         $self->{tap} = '';
         while (<STDIN>) {
