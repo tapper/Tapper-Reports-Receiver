@@ -246,7 +246,7 @@ sub post_process_request_hook
 
         $self->update_parsed_report_in_db( $harness->parsed_report );
 
-        $self->_print_report( $harness->parsed_report );
+        # $self->_print_report( $harness->parsed_report );
 }
 
 # Recalculates all DB data out of the TAP report. This may be used if
@@ -264,7 +264,7 @@ sub refresh_db_report
 
         $self->update_parsed_report_in_db( $harness->parsed_report );
 
-        $self->_print_report( $harness->parsed_report );
+        # $self->_print_report( $harness->parsed_report );
 }
 
 1;
