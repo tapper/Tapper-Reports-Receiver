@@ -211,6 +211,14 @@ sub update_parsed_report_in_db
         $self->create_report_sections($parsed_report);
         $self->create_report_groups($parsed_report);
         $self->create_report_comment($parsed_report);
+        $self->create_rss($parsed_report);
+
+}
+
+sub create_rss
+{
+        my ($self, $parsed_report) = @_;
+
 
 }
 
