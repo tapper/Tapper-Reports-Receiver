@@ -4,6 +4,12 @@
   name: dummy 1
   data:
     id: 21
+
+- schema: Tap
+  name: tap 1
+  data:
+    id: 1
+    report_id: 21
     tap: |
       OK 1 foo
       OK 2 bar
@@ -14,6 +20,12 @@
   name: dummy 2
   data:
     id: 22
+
+- schema: Tap
+  name: tap 2
+  data:
+    id: 2
+    report_id: 22
     tap: |
       OK 1 berlin
       OK 2 prag
@@ -23,6 +35,12 @@
   name: dummy 3
   data:
     id: 23
+
+- schema: Tap
+  name: tap 3
+  data:
+    id: 3
+    report_id: 23
     tap: |
       OK 1 affe
       OK 2 loewe
