@@ -28,12 +28,16 @@ sub start_new_report {
 
         $self->{$_} = $self->get_property($_) foreach qw(peeraddr peerport peerhost);
         $self->{report} = model('ReportsDB')->resultset('Report')->new({
-                                                                        tap      => '',
                                                                         peeraddr => $self->{peeraddr},
                                                                         peerport => $self->{peerport},
                                                                         peerhost => $self->{peerhost},
                                                                        });
         $self->{report}->insert;
+        my $tap = model('ReportsDB')->resultset('Tap')->new({
+                                                             tap => '',
+                                                             report_id => $self->{report}->id,
+                                                            });
+        $tap->insert;
 }
 
 sub process_request
