@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '2.010021';
+our $VERSION = '2.010023';
 
 use parent 'Net::Server::Fork';
 use Log::Log4perl;
@@ -64,8 +64,9 @@ sub write_tap_to_db
 {
         my ($self) = shift;
 
-        $self->{report}->tap( $self->{tap} );
+        $self->{report}->tap->tap( $self->{tap} );
         $self->{report}->update;
+        $self->{report}->tap->update;
 }
 
 sub get_suite {
@@ -243,6 +244,7 @@ sub post_process_request_hook
 {
         my ($self) = shift;
 
+        use Data::Dumper;
         $self->write_tap_to_db();
 
         my $harness = new Artemis::TAP::Harness( tap => $self->{tap} );
