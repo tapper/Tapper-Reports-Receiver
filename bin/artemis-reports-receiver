@@ -9,7 +9,7 @@ use Artemis::Reports::Receiver;
 my $port = Artemis::Config->subconfig->{report_port};
 my $EUID = `id -u`; chomp $EUID;
 my $EGID = `id -g`; chomp $EGID;
-$logconf = Artemis::Config->subconfig->{files}{log4perl_cfg};
+my $logconf = Artemis::Config->subconfig->{files}{log4perl_cfg};
 Log::Log4perl->init($logconf);
 
 Artemis::Reports::Receiver->run(
