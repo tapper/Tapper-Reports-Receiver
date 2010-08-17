@@ -21,6 +21,7 @@ use IO::Handle;
 use Artemis::Schema::TestTools;
 use Test::Fixture::DBIC::Schema;
 use Artemis::Reports::Receiver::Daemon;
+use Artemis::Model 'model';
 
 use Test::More;
 use Test::Deep;
@@ -62,17 +63,27 @@ else
 
         is(ref($sock), 'IO::Socket::INET', "socket created");
 
+        my $answer;
+        my $taptxt = "1..2\nok 1 affe\nok 2 zomtec\n";
         eval {
                 local $SIG{ALRM} = sub { die "Timeout!" };
                 alarm (3);
-                my $answer = <$sock>;
+                $answer = <$sock>;
                 diag $answer;
                 like ($answer, qr/^Artemis::Reports::Receiver\. Protocol is TAP\. Your report id: \d+/, "receiver api");
-                $sock->print( "1..2\nok 1 affe\nok 2 zomtec\n");
+                my $success = $sock->print( $taptxt );
+                close $sock; # must! --> triggers the daemon's post_processing hook
         };
         alarm(0);
         ok (!$@, "Read and write in time");
 
+        if (my ($report_id) = $answer =~ m/^Artemis::Reports::Receiver\. Protocol is TAP\. Your report id: (\d+)/){
+                my $report = model('ReportsDB')->resultset('Report')->find($report_id);
+                is(ref($report), 'Artemis::Schema::ReportsDB::Result::Report', 'Find report in db');
+                like($report->tap->tap, qr($taptxt), 'Tap found in db');
+        } else {
+                diag ('No report ID. Can not search for report');
+        }
         kill 15, $pid;
         sleep 3;
         kill 9, $pid;

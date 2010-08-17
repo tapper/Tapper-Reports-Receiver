@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '2.010021';
+our $VERSION = '2.010023';
 
 use parent 'Net::Server::Fork';
 use Log::Log4perl;
@@ -28,12 +28,16 @@ sub start_new_report {
 
         $self->{$_} = $self->get_property($_) foreach qw(peeraddr peerport peerhost);
         $self->{report} = model('ReportsDB')->resultset('Report')->new({
-                                                                        tap      => '',
                                                                         peeraddr => $self->{peeraddr},
                                                                         peerport => $self->{peerport},
                                                                         peerhost => $self->{peerhost},
                                                                        });
         $self->{report}->insert;
+        my $tap = model('ReportsDB')->resultset('Tap')->new({
+                                                             tap => '',
+                                                             report_id => $self->{report}->id,
+                                                            });
+        $tap->insert;
 }
 
 sub process_request
@@ -60,8 +64,9 @@ sub write_tap_to_db
 {
         my ($self) = shift;
 
-        $self->{report}->tap( $self->{tap} );
-        $self->{report}->update;
+        $self->{report}->tap->tap( $self->{tap} );
+        $self->{report}->tap->update;
+
 }
 
 sub get_suite {
