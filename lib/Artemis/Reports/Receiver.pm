@@ -6,7 +6,7 @@ use warnings;
 
 our $VERSION = '2.010023';
 
-use parent 'Net::Server::Fork';
+use parent 'Net::Server::PreFork';
 use Log::Log4perl;
 use Artemis::Config;
 
@@ -50,11 +50,18 @@ sub process_request
 
         $self->start_new_report;
         print ( "Artemis::Reports::Receiver. Protocol is TAP. Your report id: ". $self->{report}->id. "\n");
-
         $self->{tap} = '';
-        while (<STDIN>) {
-                $self->{tap} .= $_ ;
-        }
+        my $timeout = Artemis::Config->subconfig->{times}{receiver_timeout};
+        eval {
+                local $SIG{ALRM} = sub { die "Timeout" };
+                alarm ($timeout);
+                while (<STDIN>) {
+                        alarm ($timeout);
+                        $self->{tap} .= $_ ;
+                }
+        };
+        alarm 0;
+        $logger->error('timeout reached for reading TAP') if $@;
 
         # Don't put more code here - when connection is closed from
         # client side, this point here is never reached.
