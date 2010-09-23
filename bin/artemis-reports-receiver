@@ -16,7 +16,6 @@ Artemis::Reports::Receiver->run(
                                 port         => $port,
                                 log_level    => 2,
                                 max_servers  => 100,
-                                max_requests => 100,
                                 user         => $EUID,
                                 group        => $EGID,
                                );
