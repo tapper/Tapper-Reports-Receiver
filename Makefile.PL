@@ -7,9 +7,9 @@ name     'Artemis-Reports-Receiver';
 all_from 'lib/Artemis/Reports/Receiver.pm';
 author   'OSRC SysInt Team <osrc-sysint@elbe.amd.com>';
 
-build_requires 'Test::More'    => 0;
-build_requires 'Test::Perl::Critic';
-build_requires 'Artemis::Test' => '2.010004';
+build_requires 'Test::More'         => 0;
+build_requires 'Test::Perl::Critic' => 0;
+build_requires 'Artemis::Test'      => '2.010004';
 
 requires 'Artemis::Config'            => '2.010072';
 requires 'Artemis::Schema'            => '2.010084';
