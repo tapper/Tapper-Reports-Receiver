@@ -189,7 +189,7 @@ sub update_parsed_report_in_db
 {
         my ($self, $parsed_report) = @_;
 
-        no strict 'refs';
+        no strict 'refs'; ## no critic (ProhibitNoStrict)
 
         # lookup missing values in db
         $parsed_report->{db_report_meta}{suite_id} = $self->get_suite($parsed_report->{report_meta}{'suite-name'},
