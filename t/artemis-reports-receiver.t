@@ -54,7 +54,7 @@ if ($pid == 0) {
 }
 else
 {
-        sleep 3;
+        sleep 3; # wait for receiver daemon to start
         my $sock = IO::Socket::INET->new( PeerAddr  => 'localhost',
                                           PeerPort  => '7359',
                                           Proto     => 'tcp',
@@ -76,6 +76,8 @@ else
         };
         alarm(0);
         ok (!$@, "Read and write in time");
+
+        sleep 2; # wait for server to update db
 
         if (my ($report_id) = $answer =~ m/^Artemis::Reports::Receiver\. Protocol is TAP\. Your report id: (\d+)/){
                 my $report = model('ReportsDB')->resultset('Report')->find($report_id);
