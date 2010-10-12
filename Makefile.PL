@@ -6,6 +6,7 @@ use inc::Module::Install;
 name     'Artemis-Reports-Receiver';
 all_from 'lib/Artemis/Reports/Receiver.pm';
 author   'OSRC SysInt Team <osrc-sysint@elbe.amd.com>';
+license  'freebsd';
 
 build_requires 'Test::More'         => 0;
 build_requires 'Test::Perl::Critic' => 0;
