@@ -7,7 +7,6 @@ use warnings;
 
 use Artemis::Config;
 use Artemis::Reports::Receiver;
-use Method::Signatures;
 use Moose;
 
 with 'MooseX::Daemonize';
@@ -25,8 +24,9 @@ after start => sub {
                    }
 ;
 
-method initialize_server
+sub initialize_server
 {
+        my ($self) = @_;
         my $EUID = `id -u`; chomp $EUID;
         my $EGID = `id -g`; chomp $EGID;
         Artemis::Reports::Receiver->run(
@@ -37,15 +37,16 @@ method initialize_server
                                         group        => $EGID,
                                        );
 }
-;
 
-method run
+
+sub run
 {
+        my ($self) = @_;
         my ($command) = @ARGV;
         return unless $command && grep /^$command$/, qw(start status restart stop);
         $self->$command;
         say $self->status_message;
-};
+}
 
 
 1;
