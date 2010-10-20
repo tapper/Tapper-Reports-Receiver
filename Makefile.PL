@@ -27,5 +27,7 @@ requires 'DateTime::Format::Natural'  => 0;
 requires 'DateTime::Format::Mail'     => 0;
 requires 'perl'                       => '5.010';
 
+install_script glob('bin/*');
+
 WriteAll;
 
