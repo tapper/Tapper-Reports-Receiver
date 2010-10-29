@@ -21,7 +21,7 @@ open $FH, "<", $tap_archive and do
 my $arr = Artemis::Reports::Receiver->new;
 $arr->{tap} = $filecontent;
 is ($arr->tap_mimetype, 'application/x-gzip', "TAP mimetype - compressed");
-is($arr->we_got_taparchive, 1, "TAP archive recognized");
+is($arr->tap_is_archive, 1, "TAP archive recognized");
 
 # ------------------------------------------------------------
 
@@ -30,7 +30,7 @@ ok
 ok
 ";
 is ($arr->tap_mimetype, 'text/plain', "TAP mimetype - text");
-is($arr->we_got_taparchive, 0, "TAP text recognized");
+is($arr->tap_is_archive, 0, "TAP text recognized");
 
 # ------------------------------------------------------------
 
