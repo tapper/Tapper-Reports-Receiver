@@ -9,6 +9,8 @@ our $VERSION = '2.010026';
 use parent 'Net::Server::PreFork';
 use Log::Log4perl;
 use Artemis::Config;
+use IO::Scalar;
+use File::MimeInfo::Magic;
 
 BEGIN {
         Log::Log4perl::init(Artemis::Config->subconfig->{files}{log4perl_cfg});
@@ -67,10 +69,25 @@ sub process_request
         # client side, this point here is never reached.
 }
 
+sub tap_mimetype {
+        my ($self) = shift;
+
+        my $TAPH      = IO::Scalar->new(\($self->{tap}));
+        return mimetype($TAPH);
+}
+
+sub tap_is_archive
+{
+        my ($self) = shift;
+
+        return $self->tap_mimetype =~ m,application/x-(compressed-tar|gzip), ? 1 : 0;
+}
+
 sub write_tap_to_db
 {
         my ($self) = shift;
 
+        $self->{report}->tap->tap_is_archive(1) if $self->tap_is_archive;
         $self->{report}->tap->tap( $self->{tap} );
         $self->{report}->tap->update;
 
