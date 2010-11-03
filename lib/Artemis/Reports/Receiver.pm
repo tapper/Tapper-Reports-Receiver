@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '2.010026';
+our $VERSION = '2.010028';
 
 use parent 'Net::Server::PreFork';
 use Log::Log4perl;
@@ -22,7 +22,7 @@ our $logger = Log::Log4perl->get_logger('artemis.reports.receiver');
 use YAML::Syck;
 use Data::Dumper;
 use Artemis::TAP::Harness;
-use Artemis::Model 'model', 'get_systems_id_for_hostname';
+use Artemis::Model 'model';
 use DateTime::Format::Natural;
 
 sub start_new_report {
@@ -212,7 +212,6 @@ sub update_parsed_report_in_db
         $parsed_report->{db_report_meta}{suite_id} = $self->get_suite($parsed_report->{report_meta}{'suite-name'},
                                                                       $parsed_report->{report_meta}{'suite-type'},
                                                                      )->id;
-        $parsed_report->{db_report_meta}{hardwaredb_systems_id} = get_systems_id_for_hostname($parsed_report->{db_report_meta}{machine_name});
 
         # report information
         foreach (keys %{$parsed_report->{db_report_meta}})
