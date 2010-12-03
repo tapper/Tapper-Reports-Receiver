@@ -261,7 +261,8 @@ sub post_process_request_hook
 
         $self->write_tap_to_db();
 
-        my $harness = new Artemis::TAP::Harness( tap => $self->{tap} );
+        my $harness = Artemis::TAP::Harness->new( tap => $self->{tap}, 
+                                                  tap_is_archive => $self->{report}->tap->tap_is_archive );
         $harness->evaluate_report();
 
         $self->update_parsed_report_in_db( $harness->parsed_report );
