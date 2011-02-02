@@ -6,5 +6,5 @@ _build*
 pm_to_blib*
 *.tar.gz
 .lwpcookies
-Artemis-Reports-Receiver-*
+Tapper-Reports-Receiver-*
 cover_db

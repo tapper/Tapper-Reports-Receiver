@@ -16,14 +16,14 @@ use IO::Handle;
 # use YAML::Syck;
 # use Cwd;
 # use TAP::DOM;
-# use Artemis::MCP::Net;
+# use Tapper::MCP::Net;
 
-use Artemis::Schema::TestTools;
+use Tapper::Schema::TestTools;
 use Test::Fixture::DBIC::Schema;
-use Artemis::Reports::Receiver::Daemon;
-use Artemis::Model 'model';
+use Tapper::Reports::Receiver::Daemon;
+use Tapper::Model 'model';
 use File::Slurp 'slurp';
-use Artemis::Config;
+use Tapper::Config;
 
 use Test::More;
 use Test::Deep;
@@ -35,21 +35,21 @@ construct_fixture( schema  => reportsdb_schema,  fixture => 't/fixtures/reportsd
 
 ok(1);
 
-$ENV{MX_DAEMON_STDOUT} ||= '/tmp/artemis_reports_receiver_daemon_test_'.(getpwuid($<) || "unknown").'-stdout.log';
-$ENV{MX_DAEMON_STDERR} ||= '/tmp/artemis_reports_receiver_daemon_test_'.(getpwuid($<) || "unknown").'-stderr.log';
+$ENV{MX_DAEMON_STDOUT} ||= '/tmp/tapper_reports_receiver_daemon_test_'.(getpwuid($<) || "unknown").'-stdout.log';
+$ENV{MX_DAEMON_STDERR} ||= '/tmp/tapper_reports_receiver_daemon_test_'.(getpwuid($<) || "unknown").'-stderr.log';
 
-my $RECEIVED_RE = qr/^Artemis::Reports::Receiver\. Protocol is TAP\. Your report id: (\d+)/;
+my $RECEIVED_RE = qr/^Tapper::Reports::Receiver\. Protocol is TAP\. Your report id: (\d+)/;
 
-my $port = Artemis::Config->subconfig->{report_port};
+my $port = Tapper::Config->subconfig->{report_port};
 my $pid = fork();
 if ($pid == 0)
 {
         my $EUID = `id -u`; chomp $EUID;
         my $EGID = `id -g`; chomp $EGID;
-        my $receiver = Artemis::Reports::Receiver->new
+        my $receiver = Tapper::Reports::Receiver->new
             (
              port    => $port,
-             pidfile => '/tmp/artemis-reports-receiver-daemon-test-'.(getpwuid($<) || "unknown").'.pid',
+             pidfile => '/tmp/tapper-reports-receiver-daemon-test-'.(getpwuid($<) || "unknown").'.pid',
              user    => $EUID,
              group   => $EGID,
             );
@@ -86,7 +86,7 @@ else
 
         if (my ($report_id) = $answer =~ $RECEIVED_RE){
                 my $report = model('ReportsDB')->resultset('Report')->find($report_id);
-                is(ref($report), 'Artemis::Schema::ReportsDB::Result::Report', 'Find report in db');
+                is(ref($report), 'Tapper::Schema::ReportsDB::Result::Report', 'Find report in db');
                 like($report->tap->tap, qr($taptxt), 'Tap found in db');
         } else {
                 diag ('No report ID. Can not search for report');
@@ -119,13 +119,13 @@ else
 
         if (my ($report_id) = $answer =~ $RECEIVED_RE){
                 my $report = model('ReportsDB')->resultset('Report')->find($report_id);
-                is(ref($report), 'Artemis::Schema::ReportsDB::Result::Report', 'Find report in db');
+                is(ref($report), 'Tapper::Schema::ReportsDB::Result::Report', 'Find report in db');
                 is($report->tap->tap_is_archive, 1, 'Tap is marked as archive in db');
 
-                my $harness = Artemis::TAP::Harness->new( tap => $report->tap->tap, tap_is_archive => 1 );
+                my $harness = Tapper::TAP::Harness->new( tap => $report->tap->tap, tap_is_archive => 1 );
                 $harness->evaluate_report();
                 is(scalar @{$harness->parsed_report->{tap_sections}}, 4, "stored TAP is an archive");
-                is($harness->parsed_report->{report_meta}{'suite-name'},    'Artemis-Test',  "report meta suite name");
+                is($harness->parsed_report->{report_meta}{'suite-name'},    'Tapper-Test',  "report meta suite name");
                 is($harness->parsed_report->{report_meta}{'suite-version'}, '2.010012',      "report meta suite version");
                 is($harness->parsed_report->{report_meta}{'suite-type'},    'software',      "report meta suite type");
         } else {

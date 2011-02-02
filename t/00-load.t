@@ -6,7 +6,7 @@ use Class::C3;
 use MRO::Compat;
 
 BEGIN {
-	use_ok( 'Artemis::Reports::Receiver' );
+	use_ok( 'Tapper::Reports::Receiver' );
 }
 
-diag( "Testing Artemis::Reports::Receiver $Artemis::Reports::Receiver::VERSION, Perl $], $^X" );
+diag( "Testing Tapper::Reports::Receiver $Tapper::Reports::Receiver::VERSION, Perl $], $^X" );

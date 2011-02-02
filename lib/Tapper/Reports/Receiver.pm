@@ -1,4 +1,4 @@
-package Artemis::Reports::Receiver;
+package Tapper::Reports::Receiver;
 
 use 5.010;
 use strict;
@@ -8,21 +8,21 @@ our $VERSION = '2.010028';
 
 use parent 'Net::Server::PreFork';
 use Log::Log4perl;
-use Artemis::Config;
+use Tapper::Config;
 use IO::Scalar;
 use File::MimeInfo::Magic;
 
 BEGIN {
-        Log::Log4perl::init(Artemis::Config->subconfig->{files}{log4perl_cfg});
+        Log::Log4perl::init(Tapper::Config->subconfig->{files}{log4perl_cfg});
 }
 
-our $logger = Log::Log4perl->get_logger('artemis.reports.receiver');
+our $logger = Log::Log4perl->get_logger('tapper.reports.receiver');
 
 
 use YAML::Syck;
 use Data::Dumper;
-use Artemis::TAP::Harness;
-use Artemis::Model 'model';
+use Tapper::TAP::Harness;
+use Tapper::Model 'model';
 use DateTime::Format::Natural;
 
 sub start_new_report {
@@ -51,9 +51,9 @@ sub process_request
         # closed at client side.
 
         $self->start_new_report;
-        print ( "Artemis::Reports::Receiver. Protocol is TAP. Your report id: ". $self->{report}->id. "\n");
+        print ( "Tapper::Reports::Receiver. Protocol is TAP. Your report id: ". $self->{report}->id. "\n");
         $self->{tap} = '';
-        my $timeout = Artemis::Config->subconfig->{times}{receiver_timeout};
+        my $timeout = Tapper::Config->subconfig->{times}{receiver_timeout};
         eval {
                 local $SIG{ALRM} = sub { die "Timeout" };
                 alarm ($timeout);
@@ -277,7 +277,7 @@ sub post_process_request_hook
 
         $self->write_tap_to_db();
 
-        my $harness = Artemis::TAP::Harness->new( tap => $self->{tap}, 
+        my $harness = Tapper::TAP::Harness->new( tap => $self->{tap}, 
                                                   tap_is_archive => $self->{report}->tap->tap_is_archive );
         $harness->evaluate_report();
 
@@ -296,7 +296,7 @@ sub refresh_db_report
 
         $self->{report} = model('ReportsDB')->resultset('Report')->find($report_id);
 
-        my $harness = new Artemis::TAP::Harness( tap => $self->{report}->tap );
+        my $harness = new Tapper::TAP::Harness( tap => $self->{report}->tap );
         $harness->evaluate_report();
 
         $self->update_parsed_report_in_db( $harness->parsed_report );
@@ -309,13 +309,13 @@ sub refresh_db_report
 
 =head1 NAME
 
-Artemis::Reports::Receiver - Receive test reports
+Tapper::Reports::Receiver - Receive test reports
 
 
 =head1 SYNOPSIS
 
-    use Artemis::Reports::Receiver;
-    my $foo = Artemis::Reports::Receiver->new();
+    use Tapper::Reports::Receiver;
+    my $foo = Tapper::Reports::Receiver->new();
     ...
 
 =head1 AUTHOR
@@ -331,4 +331,4 @@ This program is released under the following license: restrictive
 
 =cut
 
-1; # End of Artemis::Reports::Receiver
+1; # End of Tapper::Reports::Receiver

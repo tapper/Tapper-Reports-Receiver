@@ -1,18 +1,18 @@
-package Artemis::Reports::Receiver::Daemon;
+package Tapper::Reports::Receiver::Daemon;
 
 use 5.010;
 
 use strict;
 use warnings;
 
-use Artemis::Config;
-use Artemis::Reports::Receiver;
+use Tapper::Config;
+use Tapper::Reports::Receiver;
 use Moose;
 
 with 'MooseX::Daemonize';
 
 has server => ( is => 'rw');
-has port   => ( is => 'rw', isa => 'Int', default => sub { Artemis::Config->subconfig->{report_port} } );
+has port   => ( is => 'rw', isa => 'Int', default => sub { Tapper::Config->subconfig->{report_port} } );
 
 after start => sub {
                     my $self = shift;
@@ -29,7 +29,7 @@ sub initialize_server
         my ($self) = @_;
         my $EUID = `id -u`; chomp $EUID;
         my $EGID = `id -g`; chomp $EGID;
-        Artemis::Reports::Receiver->run(
+        Tapper::Reports::Receiver->run(
                                         port         => $self->port,
                                         log_level    => 2,
                                         max_servers  => 100,

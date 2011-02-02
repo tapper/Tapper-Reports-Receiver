@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Artemis::Reports::Receiver;
+use Tapper::Reports::Receiver;
 
 my $tap_archive = 't/tap-archive-1.tgz';
 
@@ -18,7 +18,7 @@ open $FH, "<", $tap_archive and do
 
 # ------------------------------------------------------------
 
-my $arr = Artemis::Reports::Receiver->new;
+my $arr = Tapper::Reports::Receiver->new;
 $arr->{tap} = $filecontent;
 is ($arr->tap_mimetype, 'application/x-gzip', "TAP mimetype - compressed");
 is($arr->tap_is_archive, 1, "TAP archive recognized");

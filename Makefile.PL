@@ -3,19 +3,19 @@ use warnings;
 
 use inc::Module::Install;
 
-name     'Artemis-Reports-Receiver';
-all_from 'lib/Artemis/Reports/Receiver.pm';
+name     'Tapper-Reports-Receiver';
+all_from 'lib/Tapper/Reports/Receiver.pm';
 author   'OSRC SysInt Team <osrc-sysint@elbe.amd.com>';
 license  'freebsd';
 
 build_requires 'Test::More'         => 0;
 build_requires 'Test::Perl::Critic' => 0;
-build_requires 'Artemis::Test'      => '2.010004';
+build_requires 'Tapper::Test'      => '2.010004';
 build_requires 'File::Slurp'        => 0;
  
-requires 'Artemis::Config'            => '2.010075';
-requires 'Artemis::Schema'            => '2.010100';
-requires 'Artemis::TAP::Harness'      => '2.010040';
+requires 'Tapper::Config'            => '2.010075';
+requires 'Tapper::Schema'            => '2.010100';
+requires 'Tapper::TAP::Harness'      => '2.010040';
 requires 'Cwd'                        => 0;
 requires 'File::Basename'             => 0;
 requires 'File::Spec'                 => 0;

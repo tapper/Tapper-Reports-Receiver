@@ -3,6 +3,6 @@
 use strict;
 use warnings;
 
-use Artemis::Test;
+use Tapper::Test;
 
-artemis_suite_meta();
+tapper_suite_meta();

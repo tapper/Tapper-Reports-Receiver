@@ -1,4 +1,4 @@
-Artemis
+Tapper
 
 Automatic Regression Test Environment and Measurement Instrument System
 
@@ -16,7 +16,7 @@ To install this module, run the following commands:
 Start TAP receiver
 ------------------
 
- * bin/artemis-reports-receiver
+ * bin/tapper-reports-receiver
 
 
 Submit report
@@ -38,11 +38,11 @@ Submit report
 
 * Submit a TAP emitting testrun from a harness:
 
-    $ prove -vl t/artemis_schema_testrundb.t | nc -q0 localhost 7357
+    $ prove -vl t/tapper_schema_testrundb.t | nc -q0 localhost 7357
 
 
 * Submit a TAP emitting testrun without harness:
 
-    $ perl -Ilib t/artemis_schema_testrundb.t | nc -q0 localhost 7357
+    $ perl -Ilib t/tapper_schema_testrundb.t | nc -q0 localhost 7357
 
 
