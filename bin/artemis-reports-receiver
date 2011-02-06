@@ -5,17 +5,11 @@ use warnings;
 
 use Artemis::Config;
 use Artemis::Reports::Receiver;
+use Log::Log4perl;
 
 my $port = Artemis::Config->subconfig->{report_port};
-my $EUID = `id -u`; chomp $EUID;
-my $EGID = `id -g`; chomp $EGID;
 my $logconf = Artemis::Config->subconfig->{files}{log4perl_cfg};
 Log::Log4perl->init($logconf);
 
-Artemis::Reports::Receiver->run(
-                                port         => $port,
-                                log_level    => 2,
-                                max_servers  => 100,
-                                user         => $EUID,
-                                group        => $EGID,
-                               );
+my $receiver = Artemis::Reports::Receiver->new();
+$receiver->run($port);
