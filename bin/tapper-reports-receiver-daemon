@@ -1,0 +1,16 @@
+#! /usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Tapper::Reports::Receiver::Daemon;
+
+$ENV{MX_DAEMON_STDOUT} ||= '/tmp/tapper_reports_receiver_daemon_devel_stdout.log';
+$ENV{MX_DAEMON_STDERR} ||= '/tmp/tapper_reports_receiver_daemon_devel_stderr.log';
+
+my $receiver = new Tapper::Reports::Receiver::Daemon
+    (
+     pidfile => '/tmp/tapper-reports-receiver-daemon.pid'
+    );
+
+$receiver->run;

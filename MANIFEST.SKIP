@@ -1,0 +1,10 @@
+Tapper-Reports-Receiver-*.*.tar.gz
+^Tapper-Reports-Receiver-*.*$
+_build
+blib
+^Build$
+^Makefile$
+^Makefile.old$
+MANIFEST.bak
+system_scripts
+^MYMETA.yml$
