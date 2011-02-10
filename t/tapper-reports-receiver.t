@@ -9,14 +9,6 @@ use MRO::Compat;
 use IO::Socket::INET;
 use IO::Handle;
 
-# use Log::Log4perl;
-# use POSIX ":sys_wait_h";
-# use String::Diff;
-# use Sys::Hostname;
-# use YAML::Syck;
-# use Cwd;
-# use TAP::DOM;
-# use Tapper::MCP::Net;
 
 use Tapper::Schema::TestTools;
 use Test::Fixture::DBIC::Schema;
@@ -33,12 +25,10 @@ construct_fixture( schema  => testrundb_schema,  fixture => 't/fixtures/testrund
 construct_fixture( schema  => reportsdb_schema,  fixture => 't/fixtures/reportsdb/report.yml' );
 # -----------------------------------------------------------------------------------------------------------------
 
-ok(1);
-
 $ENV{MX_DAEMON_STDOUT} ||= '/tmp/tapper_reports_receiver_daemon_test_'.(getpwuid($<) || "unknown").'-stdout.log';
 $ENV{MX_DAEMON_STDERR} ||= '/tmp/tapper_reports_receiver_daemon_test_'.(getpwuid($<) || "unknown").'-stderr.log';
 
-my $RECEIVED_RE = qr/^Tapper::Reports::Receiver\. Protocol is TAP\. Your report id: (\d+)/;
+my $RECEIVED_RE = qr/^Artemis::Reports::Receiver\. Protocol is TAP\. Your report id: (\d+)/;
 
 my $port = Tapper::Config->subconfig->{report_port};
 my $pid = fork();
@@ -46,14 +36,8 @@ if ($pid == 0)
 {
         my $EUID = `id -u`; chomp $EUID;
         my $EGID = `id -g`; chomp $EGID;
-        my $receiver = Tapper::Reports::Receiver->new
-            (
-             port    => $port,
-             pidfile => '/tmp/tapper-reports-receiver-daemon-test-'.(getpwuid($<) || "unknown").'.pid',
-             user    => $EUID,
-             group   => $EGID,
-            );
-        $receiver->run;
+        my $receiver = Tapper::Reports::Receiver->new( );
+        $receiver->run($port);
 }
 else
 {
