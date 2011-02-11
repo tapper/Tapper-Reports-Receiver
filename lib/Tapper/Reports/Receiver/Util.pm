@@ -1,4 +1,4 @@
-package Artemis::Reports::Receiver::Util;
+package Tapper::Reports::Receiver::Util;
 
 use 5.010;
 use strict;
@@ -14,9 +14,9 @@ use Log::Log4perl;
 use Moose;
 use YAML::Syck;
 
-use Artemis::Config;
-use Artemis::Model 'model';
-use Artemis::TAP::Harness;
+use Tapper::Config;
+use Tapper::Model 'model';
+use Tapper::TAP::Harness;
 
 
 with 'MooseX::Log::Log4perl';
@@ -255,7 +255,7 @@ sub process_request
 
         $self->write_tap_to_db();
 
-        my $harness = Artemis::TAP::Harness->new( tap => $self->tap, 
+        my $harness = Tapper::TAP::Harness->new( tap => $self->tap, 
                                                   tap_is_archive => $self->report->tap->tap_is_archive );
         $harness->evaluate_report();
 
@@ -270,13 +270,13 @@ sub process_request
 
 =head1 NAME
 
-Artemis::Reports::Receiver - Receive test reports
+Tapper::Reports::Receiver - Receive test reports
 
 
 =head1 SYNOPSIS
 
-    use Artemis::Reports::Receiver;
-    my $foo = Artemis::Reports::Receiver->new();
+    use Tapper::Reports::Receiver;
+    my $foo = Tapper::Reports::Receiver->new();
     ...
 
 =head1 AUTHOR
@@ -292,4 +292,4 @@ This program is released under the following license: restrictive
 
 =cut
 
-1; # End of Artemis::Reports::Receiver
+1; # End of Tapper::Reports::Receiver
