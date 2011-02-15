@@ -28,6 +28,8 @@ requires 'Net::Server::PreForkSimple' => 0;
 requires 'TAP::Parser'                => 0;
 requires 'DateTime::Format::Natural'  => 0;
 requires 'DateTime::Format::Mail'     => 0;
+requires 'AnyEvent'                   => 0;
+requires 'EV'                         => 0;
 requires 'perl'                       => '5.010';
 
 install_script glob('bin/*');
