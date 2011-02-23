@@ -1,0 +1,48 @@
+Tapper
+
+Automatic Regression Test Environment and Measurement Instrument System
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
+
+
+
+Start TAP receiver
+------------------
+
+ * bin/tapper-reports-receiver
+
+
+Submit report
+-------------
+
+* Manually:
+
+    $ nc -q0 localhost 7357
+      ok 1 foo
+      ok 2 bar
+      ok 3 baz
+      ^D
+
+
+* Simple scripted:
+
+    $ (echo "ok 1 foo" ; echo "ok 2 bar"; echo "ok 3 baz") | nc -q0 localhost 7357
+
+
+* Submit a TAP emitting testrun from a harness:
+
+    $ prove -vl t/tapper_schema_testrundb.t | nc -q0 localhost 7357
+
+
+* Submit a TAP emitting testrun without harness:
+
+    $ perl -Ilib t/tapper_schema_testrundb.t | nc -q0 localhost 7357
+
+

@@ -1,0 +1,15 @@
+#! /usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Tapper::Config;
+use Tapper::Reports::Receiver;
+use Log::Log4perl;
+
+my $port = Tapper::Config->subconfig->{report_port};
+my $logconf = Tapper::Config->subconfig->{files}{log4perl_cfg};
+Log::Log4perl->init($logconf);
+
+my $receiver = Tapper::Reports::Receiver->new();
+$receiver->run($port);
