@@ -1,3 +1,4 @@
+^.git
 Tapper-Reports-Receiver-*.*.tar.gz
 ^Tapper-Reports-Receiver-*.*$
 _build
