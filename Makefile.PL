@@ -12,6 +12,8 @@ build_requires 'Test::More'         => 0;
 build_requires 'Test::Perl::Critic' => 0;
 build_requires 'Tapper::Test'      => '2.010004';
 build_requires 'File::Slurp'        => 0;
+
+author_requires 'Module::Install::WriteAll';
  
 requires 'Tapper::Config'            => '2.010075';
 requires 'Tapper::Schema'            => '2.010100';
