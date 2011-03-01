@@ -4,8 +4,6 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '2.010028';
-
 use Data::Dumper;
 use DateTime::Format::Natural;
 use File::MimeInfo::Magic;
