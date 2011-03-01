@@ -10,14 +10,14 @@ license  'freebsd';
 
 build_requires 'Test::More'         => 0;
 build_requires 'Test::Perl::Critic' => 0;
-build_requires 'Tapper::Test'      => '2.010004';
+build_requires 'Tapper::Test'       => "3.000001";
 build_requires 'File::Slurp'        => 0;
 
 author_requires 'Module::Install::WriteAll';
  
-requires 'Tapper::Config'            => '2.010075';
-requires 'Tapper::Schema'            => '2.010100';
-requires 'Tapper::TAP::Harness'      => '2.010040';
+requires 'Tapper::Config'             => "3.000001";
+requires 'Tapper::Schema'             => "3.000001";
+requires 'Tapper::TAP::Harness'       => "3.000001";
 requires 'Cwd'                        => 0;
 requires 'File::Basename'             => 0;
 requires 'File::Spec'                 => 0;
