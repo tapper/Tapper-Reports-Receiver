@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '3.000001';
+our $VERSION = '3.000002';
 
 use AnyEvent;
 use AnyEvent::Socket;
