@@ -26,6 +26,7 @@ requires 'IO::Scalar'                 => 0;
 requires 'Module::Build'              => 0;
 requires 'Moose'                      => 0;
 requires 'MooseX::Daemonize'          => 0;
+requires 'MooseX::Log::Log4perl'      => "0.42";
 requires 'Net::Server::PreForkSimple' => 0;
 requires 'TAP::Parser'                => 0;
 requires 'DateTime::Format::Natural'  => 0;
