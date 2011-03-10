@@ -37,5 +37,8 @@ requires 'perl'                       => '5.010';
 
 install_script glob('bin/*');
 
+repository 'git://github.com/amd/Tapper-Reports-Receiver.git';
+bugtracker 'http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Tapper-Reports-Receiver';
+
 WriteAll;
 
