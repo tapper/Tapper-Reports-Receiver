@@ -74,7 +74,7 @@ sub run
 
 =head1 NAME
 
-Tapper::Reports::Receiver - Tapper - Receiver for Tapper test reports
+Tapper::Reports::Receiver - Tapper - Receiver for Tapper test reports as TAP or TAP::Archive
 
 
 =head1 SYNOPSIS
