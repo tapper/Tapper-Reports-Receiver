@@ -53,8 +53,8 @@ sub run
                            if ($received_bytes <= 0) {
                                    undef $read_watcher;
                                    $condvar->send($message);
-        }
-}
+                           }
+                   }
                );
                 my $timeout_watcher = 
                   AnyEvent->timer (
