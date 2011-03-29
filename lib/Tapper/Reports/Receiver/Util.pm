@@ -4,8 +4,6 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '2.010028';
-
 use Data::Dumper;
 use DateTime::Format::Natural;
 use File::MimeInfo::Magic;
@@ -281,13 +279,13 @@ Tapper::Reports::Receiver - Receive test reports
 
 =head1 AUTHOR
 
-OSRC SysInt Team, C<< <osrc-sysint at elbe.amd.com> >>
+AMD OSRC Tapper Team, C<< <tapper at amd64.org> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 OSRC SysInt Team, all rights reserved.
+Copyright 2008-2011 AMD OSRC Tapper Team, all rights reserved.
 
-This program is released under the following license: restrictive
+This program is released under the following license: freebsd
 
 
 =cut

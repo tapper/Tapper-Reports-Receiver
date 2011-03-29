@@ -1,0 +1,24 @@
+2011-03-28  Steffen Schwigon  <steffen.schwigon@amd.com>
+
+	* v3.0.5
+
+	* utils get rewritten shebang line
+
+2011-03-10 Steffen Schwigon <steffen.schwigon@amd.com>
+
+	* v3.0.4
+
+	* distro maintenance
+
+2011-03-09 Steffen Schwigon <steffen.schwigon@amd.com>
+
+	* v3.0.3
+
+	* fix dependencies
+
+
+2011-03-02  Steffen Schwigon  <steffen.schwigon@amd.com>
+
+	* v3.0
+
+	* first public CPAN release
