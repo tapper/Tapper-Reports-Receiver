@@ -20,7 +20,7 @@ open $FH, "<", $tap_archive and do
 
 my $util = Tapper::Reports::Receiver::Util->new;
 $util->{tap} = $filecontent;
-is ($util->tap_mimetype, 'application/x-gzip', "TAP mimetype - compressed");
+like ($util->tap_mimetype, qr'application/(octet-stream|x-(compressed-tar|gzip))', "TAP mimetype - compressed");
 is($util->tap_is_archive, 1, "TAP archive recognized");
 
 # ------------------------------------------------------------

@@ -65,7 +65,7 @@ sub tap_is_archive
 {
         my ($self) = shift;
 
-        return $self->tap_mimetype =~ m,application/x-(compressed-tar|gzip), ? 1 : 0;
+        return $self->tap_mimetype =~ m,application/(octet-stream|x-(compressed-tar|gzip)), ? 1 : 0;
 }
 
 
