@@ -244,6 +244,36 @@ sub update_parsed_report_in_db
 
 }
 
+sub forward_to_level2_receivers
+{
+        my ($self) = @_;
+
+        my @level2_receivers = (keys %{$self->cfg->{receiver}{level2} || {}});
+
+        foreach my $l2receiver (@level2_receivers) {
+                $self->log->debug( "L2 receiver: $l2receiver" );
+
+                my $options = $self->cfg->{receiver}{level2}{$l2receiver};
+                next if $options->{disabled};
+
+                my $l2r_class = "Tapper::Reports::Receiver::Level2::$l2receiver";
+                eval "use $l2r_class"; ## no critic
+                if ($@) {
+                        return "Could not load $l2r_class";
+                } else {
+                        no strict 'refs'; ## no critic
+                        $self->log->debug( "Call ${l2r_class}::submit()" );
+                        my ($error, $retval) = &{"${l2r_class}::submit"}($self, $self->report, $options);
+                        if ($error) {
+                                $self->log->error( "Error calling ${l2r_class}::submit: " . $retval );
+                                return $retval;
+                        }
+                        return 0;
+                }
+        }
+}
+
+
 =head2 process_request
 
 Process the tap and put it into the database.
@@ -265,6 +295,7 @@ sub process_request
         $harness->evaluate_report();
 
         $self->update_parsed_report_in_db( $harness->parsed_report );
+        $self->forward_to_level2_receivers();
 
 }
 
