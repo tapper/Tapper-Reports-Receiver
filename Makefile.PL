@@ -14,7 +14,8 @@ build_requires 'Tapper::Test' => "3.000010";
 build_requires 'File::Slurp'        => 0;
 
 author_requires 'Module::Install::WriteAll';
- 
+
+requires 'Tapper::Base'   => "3.000010";
 requires 'Tapper::Config' => "3.000010";
 requires 'Tapper::Schema' => "3.000010";
 requires 'Tapper::Model' => "3.000010";

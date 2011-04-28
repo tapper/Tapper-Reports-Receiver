@@ -8,7 +8,6 @@ use Data::Dumper;
 use DateTime::Format::Natural;
 use File::MimeInfo::Magic;
 use IO::Scalar;
-use Log::Log4perl;
 use Moose;
 use YAML::Syck;
 
@@ -16,15 +15,23 @@ use Tapper::Config;
 use Tapper::Model 'model';
 use Tapper::TAP::Harness;
 
+extends 'Tapper::Base';
 
-with 'MooseX::Log::Log4perl';
+has report => (is => 'rw');
+has tap    => (is => 'rw');
 
 
-has report => (is => 'rw',
-              );
-has tap => (is => 'rw');
-            
-             
+=head2 cfg
+
+Provide Tapper config.
+
+=cut
+
+sub cfg
+{
+        my ($self) = @_;
+        return Tapper::Config->subconfig();
+}
 
 =head2 start_new_report
 
