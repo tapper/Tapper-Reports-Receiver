@@ -12,9 +12,11 @@ build_requires 'Test::More'         => 0;
 build_requires 'Test::Perl::Critic' => 0;
 build_requires 'Tapper::Test' => "3.000010";
 build_requires 'File::Slurp'        => 0;
+build_requires 'HTTP::Daemon'       => 0;
 
 author_requires 'Module::Install::WriteAll';
- 
+
+requires 'Tapper::Base'   => "3.000010";
 requires 'Tapper::Config' => "3.000010";
 requires 'Tapper::Schema' => "3.000010";
 requires 'Tapper::Model' => "3.000010";
@@ -34,6 +36,8 @@ requires 'DateTime::Format::Natural'  => 0;
 requires 'DateTime::Format::Mail'     => 0;
 requires 'AnyEvent'                   => 0;
 requires 'EV'                         => 0;
+requires 'Scalar::Util'               => 0;
+requires 'LWP'                        => 0;
 requires 'perl'                       => '5.010';
 
 install_script glob('bin/*');

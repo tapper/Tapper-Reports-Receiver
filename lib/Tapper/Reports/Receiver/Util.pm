@@ -8,7 +8,6 @@ use Data::Dumper;
 use DateTime::Format::Natural;
 use File::MimeInfo::Magic;
 use IO::Scalar;
-use Log::Log4perl;
 use Moose;
 use YAML::Syck;
 
@@ -16,15 +15,23 @@ use Tapper::Config;
 use Tapper::Model 'model';
 use Tapper::TAP::Harness;
 
+extends 'Tapper::Base';
 
-with 'MooseX::Log::Log4perl';
+has report => (is => 'rw');
+has tap    => (is => 'rw');
 
 
-has report => (is => 'rw',
-              );
-has tap => (is => 'rw');
-            
-             
+=head2 cfg
+
+Provide Tapper config.
+
+=cut
+
+sub cfg
+{
+        my ($self) = @_;
+        return Tapper::Config->subconfig();
+}
 
 =head2 start_new_report
 
@@ -65,7 +72,7 @@ sub tap_is_archive
 {
         my ($self) = shift;
 
-        return $self->tap_mimetype =~ m,application/x-(compressed-tar|gzip), ? 1 : 0;
+        return $self->tap_mimetype =~ m,application/(octet-stream|x-(compressed-tar|gzip)), ? 1 : 0;
 }
 
 
@@ -237,6 +244,36 @@ sub update_parsed_report_in_db
 
 }
 
+sub forward_to_level2_receivers
+{
+        my ($self) = @_;
+
+        my @level2_receivers = (keys %{$self->cfg->{receiver}{level2} || {}});
+
+        foreach my $l2receiver (@level2_receivers) {
+                $self->log->debug( "L2 receiver: $l2receiver" );
+
+                my $options = $self->cfg->{receiver}{level2}{$l2receiver};
+                next if $options->{disabled};
+
+                my $l2r_class = "Tapper::Reports::Receiver::Level2::$l2receiver";
+                eval "use $l2r_class"; ## no critic
+                if ($@) {
+                        return "Could not load $l2r_class";
+                } else {
+                        no strict 'refs'; ## no critic
+                        $self->log->debug( "Call ${l2r_class}::submit()" );
+                        my ($error, $retval) = &{"${l2r_class}::submit"}($self, $self->report, $options);
+                        if ($error) {
+                                $self->log->error( "Error calling ${l2r_class}::submit: " . $retval );
+                                return $retval;
+                        }
+                        return 0;
+                }
+        }
+}
+
+
 =head2 process_request
 
 Process the tap and put it into the database.
@@ -258,6 +295,7 @@ sub process_request
         $harness->evaluate_report();
 
         $self->update_parsed_report_in_db( $harness->parsed_report );
+        $self->forward_to_level2_receivers();
 
 }
 
