@@ -8,7 +8,7 @@ our $VERSION = '3.000010';
 
 use AnyEvent;
 use AnyEvent::Socket;
-use EV;
+use AnyEvent::Handle;
 use IO::Handle;
 use Moose;
 
@@ -25,48 +25,45 @@ Execute the reports receiver.
 
 =cut
 
+
 sub run
 {
         my ($self, $bind_port) = @_;
+	my $condvar = AnyEvent->condvar;
+
         tcp_server undef, $bind_port, sub {
                 my ($fh, $host, $port) = @_;
                 return unless $fh;
-                $fh->autoflush(1);
 
                 my $util      = Tapper::Reports::Receiver::Util->new();
                 my $report_id = $util->start_new_report($host, $port);
-                $fh->say( "Tapper::Reports::Receiver. ",
-                          "Protocol is TAP. ",
-                          "Your report id: $report_id");
 
+                my $buffer;
+		my $hdl; $hdl = AnyEvent::Handle->new(
+                                                      fh       => $fh,
+                                                      rtimeout => Tapper::Config->subconfig->{times}{receiver_timeout},
+                                                      on_eof   => sub { 
+                                                              $util->process_request($hdl->rbuf);
+                                                      },
+                                                      on_read  => sub {},
+                                                      on_rtimeout => sub {
+                                                              $self->log->error('timeout reached for reading TAP');
+                                                              $util->process_request($hdl->rbuf);
+                                                      },
+                                                      on_error => sub {
+                                                              $util->process_request($hdl->rbuf);
+                                                              $hdl->destroy
+                                                      },
+                                                     ); 
 
-                my $condvar = AnyEvent->condvar;
-
-                my $message='';
-                my $read_watcher; 
-                $read_watcher = AnyEvent->io
-                  (
-                   fh   => $fh,
-                   poll => 'r',
-                   cb   => sub{
-                           my $received_bytes = sysread $fh, $message, 1024, length $message;
-                           if ($received_bytes <= 0) {
-                                   undef $read_watcher;
-                                   $condvar->send($message);
-                           }
-                   }
-               );
-                my $timeout_watcher = 
-                  AnyEvent->timer (
-                                   after => Tapper::Config->subconfig->{times}{receiver_timeout},
-                                   cb    => sub {
-                                           $self->log->error('timeout reached for reading TAP');
-                                           $condvar->send($message);
-                     });
-                my $tap = $condvar->recv;
-                $util->process_request($tap);
+		$hdl->push_write(
+                                 "Tapper::Reports::Receiver. ".
+                                 "Protocol is TAP. ".
+                                 "Your report id: $report_id".
+                                 "\n"
+		);
         };
-        EV::loop;
+	$condvar->recv;
 }
 
 1;
