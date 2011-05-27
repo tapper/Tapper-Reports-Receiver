@@ -286,18 +286,26 @@ sub process_request
 {
         my ($self, $tap) = @_;
 
-        $self->tap($tap);
+        $SIG{CHLD} = 'IGNORE';
+        my $pid = fork();
+        if ($pid == 0) {
+                $self->tap($tap);
 
-        $self->write_tap_to_db();
+                $self->write_tap_to_db();
 
-        my $harness = Tapper::TAP::Harness->new( tap => $self->tap, 
-                                                  tap_is_archive => $self->report->tap->tap_is_archive );
-        $harness->evaluate_report();
+                my $harness = Tapper::TAP::Harness->new( tap => $self->tap, 
+                                                         tap_is_archive => $self->report->tap->tap_is_archive );
+                $harness->evaluate_report();
 
-        $self->update_parsed_report_in_db( $harness->parsed_report );
-        $self->forward_to_level2_receivers();
-
+                $self->update_parsed_report_in_db( $harness->parsed_report );
+                $self->forward_to_level2_receivers();
+                exit 0;
+        } else {
+                # noop in parent, return immediately
+        }
+        
 }
+
 
 
 
