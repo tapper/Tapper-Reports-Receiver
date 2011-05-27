@@ -42,7 +42,7 @@ sub run
 		my $hdl; $hdl = AnyEvent::Handle->new(
                                                       fh       => $fh,
                                                       rtimeout => Tapper::Config->subconfig->{times}{receiver_timeout},
-                                                      on_eof   => sub { 
+                                                      on_eof   => sub {
                                                               $util->process_request($hdl->rbuf);
                                                       },
                                                       on_read  => sub {},
@@ -54,7 +54,7 @@ sub run
                                                               $util->process_request($hdl->rbuf);
                                                               $hdl->destroy
                                                       },
-                                                     ); 
+                                                     );
 
 		$hdl->push_write(
                                  "Tapper::Reports::Receiver. ".

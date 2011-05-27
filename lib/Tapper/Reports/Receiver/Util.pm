@@ -46,7 +46,7 @@ Create database entries to store the new report.
 
 sub start_new_report {
         my ($self, $host, $port) = @_;
-        
+
         $self->report( model('ReportsDB')->resultset('Report')->new({
                                                                      peerport => $port,
                                                                      peerhost => $host,
@@ -293,7 +293,7 @@ sub process_request
 
                 $self->write_tap_to_db();
 
-                my $harness = Tapper::TAP::Harness->new( tap => $self->tap, 
+                my $harness = Tapper::TAP::Harness->new( tap => $self->tap,
                                                          tap_is_archive => $self->report->tap->tap_is_archive );
                 $harness->evaluate_report();
 
@@ -303,7 +303,7 @@ sub process_request
         } else {
                 # noop in parent, return immediately
         }
-        
+
 }
 
 
