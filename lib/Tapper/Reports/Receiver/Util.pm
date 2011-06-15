@@ -158,11 +158,13 @@ sub create_report_groups
 
         my ($reportgroup_arbitrary,
             $reportgroup_testrun,
-            $reportgroup_primary
+            $reportgroup_primary,
+            $owner
            ) = (
                 $parsed_report->{db_report_reportgroup_meta}{reportgroup_arbitrary},
                 $parsed_report->{db_report_reportgroup_meta}{reportgroup_testrun},
                 $parsed_report->{db_report_reportgroup_meta}{reportgroup_primary},
+                $parsed_report->{db_report_reportgroup_meta}{owner},
                );
 
         if ($reportgroup_arbitrary and $reportgroup_arbitrary ne 'None') {
@@ -171,16 +173,25 @@ sub create_report_groups
                       report_id     => $self->report->id,
                       arbitrary_id  => $reportgroup_arbitrary,
                       primaryreport => $reportgroup_primary,
+                      owner         => $owner,
                      });
                 $reportgroup->insert;
         }
 
         if ($reportgroup_testrun and $reportgroup_testrun ne 'None') {
+                if (not $owner) {
+                        # don't check existance of each element in the search chain
+                        eval {
+                                $owner = model('TestrunDB')->resultset('Testrun')->find($reportgroup_testrun)->owner->login;
+                        };
+                }
+
                 my $reportgroup = model('ReportsDB')->resultset('ReportgroupTestrun')->new
                     ({
                       report_id     => $self->report->id,
                       testrun_id    => $reportgroup_testrun,
                       primaryreport => $reportgroup_primary,
+                      owner         => $owner,
                      });
                 $reportgroup->insert;
 
