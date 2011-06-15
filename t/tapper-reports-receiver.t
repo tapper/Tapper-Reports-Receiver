@@ -116,7 +116,88 @@ else
                 diag ('No report ID. Can not search for report');
         }
 
-        # ==================================================
+        # =================== Reports Owner in header ================================
+
+
+        $sock = IO::Socket::INET->new( PeerAddr  => 'localhost',
+                                       PeerPort  => $port,
+                                       Proto     => 'tcp',
+                                       ReuseAddr => 1,
+                                     ) or die $!;
+        is(ref($sock), 'IO::Socket::INET', "socket created");
+
+        open(my $fh, "<", 't/files/report_owner_in_header') or die "Can not open 't/files/report_owner_in_header':$!";
+        $taptxt = do {local $/; <$fh>};
+        close $fh;
+
+        eval {
+                local $SIG{ALRM} = sub { die "Timeout!" };
+                alarm (3);
+                $answer = <$sock>;
+                diag $answer;
+                like ($answer, $RECEIVED_RE, "receiver api");
+                my $success = $sock->print( $taptxt );
+                close $sock; # must! --> triggers the daemon's post_processing hook
+        };
+        alarm(0);
+        ok (!$@, "Read and write in time");
+
+        sleep 2; # wait for server to update db
+
+        if (my ($report_id) = $answer =~ $RECEIVED_RE){
+                my $report = model('ReportsDB')->resultset('Report')->find($report_id);
+                is(ref($report), 'Tapper::Schema::ReportsDB::Result::Report', 'Find report in db');
+                if (defined $report->reportgrouptestrun) {
+                        is($report->reportgrouptestrun->owner, 'oberon', 'Owner set from header');
+                } else {
+                        fail ("Report is not part of reportgrouptestrun");
+                }
+        } else {
+                diag ('No report ID. Can not search for report');
+        }
+
+
+        # =================== Reports Owner in header ================================
+
+
+        $sock = IO::Socket::INET->new( PeerAddr  => 'localhost',
+                                       PeerPort  => $port,
+                                       Proto     => 'tcp',
+                                       ReuseAddr => 1,
+                                     ) or die $!;
+        is(ref($sock), 'IO::Socket::INET', "socket created");
+
+        open(my $fh, "<", 't/files/report_owner_from_db') or die "Can not open 't/files/report_owner_in_header':$!";
+        $taptxt = do {local $/; <$fh>};
+        close $fh;
+
+        eval {
+                local $SIG{ALRM} = sub { die "Timeout!" };
+                alarm (3);
+                $answer = <$sock>;
+                diag $answer;
+                like ($answer, $RECEIVED_RE, "receiver api");
+                my $success = $sock->print( $taptxt );
+                close $sock; # must! --> triggers the daemon's post_processing hook
+        };
+        alarm(0);
+        ok (!$@, "Read and write in time");
+
+        sleep 2; # wait for server to update db
+
+        if (my ($report_id) = $answer =~ $RECEIVED_RE){
+                my $report = model('ReportsDB')->resultset('Report')->find($report_id);
+                is(ref($report), 'Tapper::Schema::ReportsDB::Result::Report', 'Find report in db');
+                if (defined $report->reportgrouptestrun) {
+                        is($report->reportgrouptestrun->owner, 'sschwigo', 'Owner set from header');
+                } else {
+                        fail ("Report is not part of reportgrouptestrun");
+                }
+        } else {
+                diag ('No report ID. Can not search for report');
+        }
+
+
 
         kill 15, $pid;
         sleep 3;
