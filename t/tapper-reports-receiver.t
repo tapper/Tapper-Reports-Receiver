@@ -52,6 +52,7 @@ else
 
         # ================================================== plain TAP ==========
 
+        my $fh;
         my $answer;
         my $taptxt = "1..2\nok 1 affe\nok 2 zomtec\n";
         eval {
@@ -126,7 +127,7 @@ else
                                      ) or die $!;
         is(ref($sock), 'IO::Socket::INET', "socket created");
 
-        open(my $fh, "<", 't/files/report_owner_in_header') or die "Can not open 't/files/report_owner_in_header':$!";
+        open($fh, "<", 't/files/report_owner_in_header') or die "Can not open 't/files/report_owner_in_header':$!";
         $taptxt = do {local $/; <$fh>};
         close $fh;
 
@@ -167,7 +168,7 @@ else
                                      ) or die $!;
         is(ref($sock), 'IO::Socket::INET', "socket created");
 
-        open(my $fh, "<", 't/files/report_owner_from_db') or die "Can not open 't/files/report_owner_in_header':$!";
+        open($fh, "<", 't/files/report_owner_from_db') or die "Can not open 't/files/report_owner_in_header':$!";
         $taptxt = do {local $/; <$fh>};
         close $fh;
 
