@@ -16,6 +16,7 @@ sub submit
 
         return unless $codespeed_url && $subscribe_dpath;
 
+        my $max_retry = 5;
         my $tap_dom = $report->get_cached_tapdom;
         my @chunks = dpath($subscribe_dpath)->match($tap_dom);
         @chunks = @{$chunks[0]} while $chunks[0] && reftype $chunks[0] eq "ARRAY"; # deref all array envelops
@@ -23,7 +24,15 @@ sub submit
         return unless @chunks;
 
         my $ua = LWP::UserAgent->new;
-        $ua->post($codespeed_url."/result/add/", $_) foreach @chunks;
+        $ua->timeout(10);
+        foreach my $chunk (@chunks) {
+                my $response;
+                my $retry = $max_retry;
+                do {
+                        $response = $ua->post($codespeed_url."/result/add/", $chunk);
+                } while ( !$response->is_success and $retry-- );
+                $util->log->warn("Submit to $codespeed_url FAILED.") if !$response->is_success;
+        }
 }
 
 1;
