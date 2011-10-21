@@ -6,8 +6,8 @@ use Log::Log4perl;
 
 use Tapper::Reports::Receiver::Daemon;
 
-$ENV{MX_DAEMON_STDOUT} ||= '/tmp/tapper_reports_receiver_daemon_devel_stdout.log';
-$ENV{MX_DAEMON_STDERR} ||= '/tmp/tapper_reports_receiver_daemon_devel_stderr.log';
+$ENV{MX_DAEMON_STDOUT} ||= '/var/log/tapper_reports_receiver_daemon_stdout.log';
+$ENV{MX_DAEMON_STDERR} ||= '/var/log/tapper_reports_receiver_daemon_stderr.log';
 
 my $logconf = Tapper::Config->subconfig->{files}{log4perl_cfg};
 Log::Log4perl->init($logconf);
