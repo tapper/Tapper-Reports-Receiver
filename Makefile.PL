@@ -18,7 +18,7 @@ author_requires 'Module::Install::WriteAll';
 
 requires 'Tapper::Base'   => "3.000010";
 requires 'Tapper::Config' => "3.000010";
-requires 'Tapper::Schema' => "3.000013";
+requires 'Tapper::Schema' => "3.000016";
 requires 'Tapper::Model' => "3.000010";
 requires 'Tapper::TAP::Harness' => "3.000011";
 requires 'Cwd'                        => 0;
