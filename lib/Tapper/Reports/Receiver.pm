@@ -43,16 +43,21 @@ sub run
                                                       fh       => $fh,
                                                       rtimeout => Tapper::Config->subconfig->{times}{receiver_timeout},
                                                       on_eof   => sub {
-                                                              $util->process_request($hdl->rbuf);
+                                                              my $tap = $hdl->rbuf;
+                                                              $hdl->destroy;
+                                                              $util->process_request( $tap );
                                                       },
                                                       on_read  => sub {},
                                                       on_rtimeout => sub {
+                                                              my $tap = $hdl->rbuf;
+                                                              $hdl->destroy;
                                                               $self->log->error('timeout reached for reading TAP');
-                                                              $util->process_request($hdl->rbuf);
+                                                              $util->process_request( $tap );
                                                       },
                                                       on_error => sub {
-                                                              $util->process_request($hdl->rbuf);
-                                                              $hdl->destroy
+                                                              my $tap = $hdl->rbuf;
+                                                              $hdl->destroy;
+                                                              $util->process_request( $tap );
                                                       },
                                                      );
 
