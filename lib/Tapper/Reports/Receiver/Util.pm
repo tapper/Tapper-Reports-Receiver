@@ -10,6 +10,7 @@ use File::MimeInfo::Magic;
 use IO::Scalar;
 use Moose;
 use YAML::Syck;
+use Devel::Backtrace;
 
 use Tapper::Config;
 use Tapper::Model 'model';
@@ -300,6 +301,15 @@ sub process_request
         $SIG{CHLD} = 'IGNORE';
         my $pid = fork();
         if ($pid == 0) {
+                $0 = "tapper-reports-receiver-".$self->report->id;
+                $SIG{USR1} = sub {
+                        local $SIG{USR1}  = 'ignore'; # make handler reentrant, don't handle signal twice
+                        my $backtrace = Devel::Backtrace->new(-start=>2, -format => '%I. %s');
+                        open my $fh, ">>", '/tmp/tapper-receiver-util-'.$self->report->id;
+                        print $fh $backtrace;
+                        close $fh;
+                };
+
                 $self->tap($tap);
 
                 $self->write_tap_to_db();
