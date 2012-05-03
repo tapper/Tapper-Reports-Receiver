@@ -39,6 +39,8 @@ requires 'EV'                         => 0;
 requires 'Scalar::Util'               => 0;
 requires 'LWP'                        => 0;
 requires 'perl'                       => '5.010';
+requires 'YAML::Syck'                 => 0;
+requires 'Devel::Backtrace'           => 0;
 
 install_script glob('bin/*');
 
