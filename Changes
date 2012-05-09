@@ -1,3 +1,8 @@
+Revision history for {{$dist->name}}
+
+{{$NEXT}}
+        - big Dist::Zilla roundhouse kick
+
 2011-04-07  Steffen Schwigon  <steffen.schwigon@amd.com>
 
 	* v3.0.10

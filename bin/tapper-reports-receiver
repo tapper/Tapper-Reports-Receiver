@@ -1,4 +1,6 @@
-#! perl
+#! /usr/bin/perl
+# PODNAME: tapper-reports-receiver-daemon
+# ABSTRACT: cmdline frontend to Tapper::Reports::Receiver
 
 use strict;
 use warnings;
