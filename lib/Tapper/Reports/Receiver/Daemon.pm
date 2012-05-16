@@ -22,6 +22,11 @@ after start => sub {
 };
 
 
+=head2 run
+
+Run daemon.
+
+=cut
 
 sub run
 {

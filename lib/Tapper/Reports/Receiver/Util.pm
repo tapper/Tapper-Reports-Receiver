@@ -1,4 +1,5 @@
 package Tapper::Reports::Receiver::Util;
+# ABSTRACT: Receive test reports
 
 use 5.010;
 use strict;
@@ -61,6 +62,11 @@ sub start_new_report {
         return $self->report->id;
 }
 
+=head2 tap_mimetype
+
+Return mimetype of received TAP (Text vs. TAP::Archive).
+
+=cut
 
 sub tap_mimetype {
         my ($self) = shift;
@@ -68,6 +74,12 @@ sub tap_mimetype {
         my $TAPH      = IO::Scalar->new(\($self->tap));
         return mimetype($TAPH);
 }
+
+=head2 tap_is_archive
+
+Return true when TAP is TAP::Archive.
+
+=cut
 
 sub tap_is_archive
 {
@@ -96,6 +108,12 @@ sub write_tap_to_db
         return;
 }
 
+=head2 get_suite
+
+Get suite name from TAP.
+
+=cut
+
 sub get_suite {
         my ($self, $suite_name, $suite_type) = @_;
 
@@ -113,6 +131,12 @@ sub get_suite {
         }
         return $suite;
 }
+
+=head2 create_report_sections
+
+Divide TAP into sections (a Tapper specific extension).
+
+=cut
 
 sub create_report_sections
 {
@@ -139,6 +163,12 @@ sub create_report_sections
         }
 }
 
+=head2 update_reportgroup_testrun_stats
+
+Update testrun stats where this report belongs to.
+
+=cut
+
 sub update_reportgroup_testrun_stats
 {
         my ($self, $testrun_id) = @_;
@@ -152,6 +182,12 @@ sub update_reportgroup_testrun_stats
         $reportgroupstats->update_failed_passed;
         $reportgroupstats->update;
 }
+
+=head2 create_report_groups
+
+Create reportgroup from testrun details or arbitrary IDs.
+
+=cut
 
 sub create_report_groups
 {
@@ -200,6 +236,11 @@ sub create_report_groups
         }
 }
 
+=head2 create_report_comment
+
+Reports can be attached with a comment. Create this.
+=cut
+
 sub create_report_comment
 {
         my ($self, $parsed_report) = @_;
@@ -215,6 +256,12 @@ sub create_report_comment
                 $reportcomment->insert;
         }
 }
+
+=head2 update_parsed_report_in_db
+
+Carve out details from report and update those values in DB.
+
+=cut
 
 sub update_parsed_report_in_db
 {
@@ -255,6 +302,13 @@ sub update_parsed_report_in_db
         $self->create_report_comment($parsed_report);
 
 }
+
+=head2 forward_to_level2_receivers
+
+Load configured I<Level 2 receiver> plugins and call them with this
+report.
+
+=cut
 
 sub forward_to_level2_receivers
 {

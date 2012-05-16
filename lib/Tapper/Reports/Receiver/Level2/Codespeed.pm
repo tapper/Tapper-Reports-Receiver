@@ -7,6 +7,12 @@ use LWP::UserAgent;
 use Data::DPath 'dpath';
 use Scalar::Util "reftype";
 
+=head2 submit
+
+Submit carved out data from a report to a Codespeed application URL.
+
+=cut
+
 sub submit
 {
         my ($util, $report, $options) = @_;
