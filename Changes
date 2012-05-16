@@ -1,6 +1,13 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - [FEAT] SIGUSR1 based debugging help for Receiver
+        - [FEAT] get owner of reportgroups
+        - [FEAT] introduce 'Level 2 receivers'
+        - [FEAT] particular level2 receiver for Codespeed
+        - [FIX] AnyEvent handling
+        - [FIX] fork for report handling
+        - [FIX] extend TAP::Archive recognition to octet-stream
         - big Dist::Zilla roundhouse kick
 
 2011-04-07  Steffen Schwigon  <steffen.schwigon@amd.com>
