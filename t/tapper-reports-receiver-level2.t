@@ -145,7 +145,7 @@ else
                         my $taptxt = slurp("t/tap-archive-2-codespeed.tap");
                         send_tap_report($port, $taptxt);
                         check_level2_receiver ($PARENT_RDR, $CHILD_WTR, $CHILD_RDR, $PARENT_WTR);
-                        
+
                 };
                 alarm(0);
                 ok (!$@, "Read and write in time - codespeed");

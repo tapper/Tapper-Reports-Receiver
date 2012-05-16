@@ -26,7 +26,7 @@ sub submit
         my $tap_dom = $report->get_cached_tapdom;
         my @chunks = dpath($subscribe_dpath)->match($tap_dom);
         @chunks = @{$chunks[0]} while $chunks[0] && reftype $chunks[0] eq "ARRAY"; # deref all array envelops
-        
+
         return unless @chunks;
 
         my $ua = LWP::UserAgent->new;
@@ -92,17 +92,3 @@ Used indirectly via L<Tapper::Reports::Receiver|Tapper::Reports::Receiver>.
         my ($util, $report, $options) = @_;
         # ... actual data forwarding here
  }
-
-=head1 AUTHOR
-
-AMD OSRC Tapper Team, C<< <tapper at amd64.org> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2011 AMD OSRC Tapper Team, all rights reserved.
-
-This program is released under the following license: freebsd
-
-
-=cut
-

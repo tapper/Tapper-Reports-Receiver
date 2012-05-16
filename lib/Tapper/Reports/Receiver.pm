@@ -25,7 +25,7 @@ Execute the reports receiver.
 sub run
 {
         my ($self, $bind_port) = @_;
-	my $condvar = AnyEvent->condvar;
+        my $condvar = AnyEvent->condvar;
 
         tcp_server undef, $bind_port, sub {
                 my ($fh, $host, $port) = @_;
@@ -35,7 +35,7 @@ sub run
                 my $report_id = $util->start_new_report($host, $port);
 
                 my $buffer;
-		my $hdl; $hdl = AnyEvent::Handle->new(
+                my $hdl; $hdl = AnyEvent::Handle->new(
                                                       fh       => $fh,
                                                       rtimeout => Tapper::Config->subconfig->{times}{receiver_timeout},
                                                       on_eof   => sub {
@@ -57,14 +57,14 @@ sub run
                                                       },
                                                      );
 
-		$hdl->push_write(
+ $hdl->push_write(
                                  "Tapper::Reports::Receiver. ".
                                  "Protocol is TAP. ".
                                  "Your report id: $report_id".
                                  "\n"
-		);
+                 );
         };
-	$condvar->recv;
+        $condvar->recv;
 }
 
 1; # End of Tapper::Reports::Receiver

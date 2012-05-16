@@ -381,34 +381,4 @@ sub process_request
 
 }
 
-
-
-
 1;
-
-
-=head1 NAME
-
-Tapper::Reports::Receiver - Receive test reports
-
-
-=head1 SYNOPSIS
-
-    use Tapper::Reports::Receiver;
-    my $foo = Tapper::Reports::Receiver->new();
-    ...
-
-=head1 AUTHOR
-
-AMD OSRC Tapper Team, C<< <tapper at amd64.org> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008-2011 AMD OSRC Tapper Team, all rights reserved.
-
-This program is released under the following license: freebsd
-
-
-=cut
-
-1; # End of Tapper::Reports::Receiver
