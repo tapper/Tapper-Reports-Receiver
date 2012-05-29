@@ -12,7 +12,7 @@ use IO::Handle;
 
 use Tapper::Schema::TestTools;
 use Test::Fixture::DBIC::Schema;
-use Tapper::Reports::Receiver::Daemon;
+use Tapper::Reports::Receiver;
 use Tapper::Model 'model';
 use File::Slurp 'slurp';
 use Tapper::Config;
@@ -34,9 +34,6 @@ Log::Log4perl->init(\$string);
 construct_fixture( schema  => testrundb_schema,  fixture => 't/fixtures/testrundb/testrun_with_preconditions.yml' );
 construct_fixture( schema  => reportsdb_schema,  fixture => 't/fixtures/reportsdb/report.yml' );
 # -----------------------------------------------------------------------------------------------------------------
-
-$ENV{MX_DAEMON_STDOUT} ||= '/tmp/tapper_reports_receiver_daemon_test_'.(getpwuid($<) || "unknown").'-stdout.log';
-$ENV{MX_DAEMON_STDERR} ||= '/tmp/tapper_reports_receiver_daemon_test_'.(getpwuid($<) || "unknown").'-stderr.log';
 
 local $ENV{TAPPER_CONFIG_FILE} = "t/tapper.cfg";
 Tapper::Config->_switch_context();
