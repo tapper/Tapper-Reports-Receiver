@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+4.0.2     2012-06-04
         - explicitely upgrade troublemaker deps
 
 4.0.1     2012-05-16
