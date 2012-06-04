@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - explicitely upgrade troublemaker deps
 
 4.0.1     2012-05-16
         - [FEAT] SIGUSR1 based debugging help for Receiver
