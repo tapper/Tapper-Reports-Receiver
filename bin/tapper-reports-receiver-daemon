@@ -6,14 +6,15 @@ use strict;
 use warnings;
 use Log::Log4perl;
 
+use File::Spec::Functions 'tmpdir';
+use File::Temp "tempfile";
 use Tapper::Reports::Receiver;
 
 use App::Daemon 'daemonize';
+my ($tmpfh, $tmpfile) = tempfile("tapper-reports-receiver-daemon.log-XXXXX", UNLINK => 1);
 $App::Daemon::as_user = "root";
-$App::Daemon::logfile = $ENV{HARNESS_ACTIVE} ? "/tmp/tapper-reports-receiver-daemon.log"
-                                             : "/var/log/tapper-reports-receiver-daemon.log";
-$App::Daemon::pidfile = "/tmp/tapper-reports-receiver-daemon.pid";
-
+$App::Daemon::logfile = $ENV{HARNESS_ACTIVE} ? $tmpfile : "/var/log/tapper-reports-receiver-daemon.log";
+$App::Daemon::pidfile = tmpdir()."/tapper-reports-receiver-daemon.pid";
 daemonize();
 my $port = Tapper::Config->subconfig->{report_port};
 Tapper::Reports::Receiver->new()->run($port);

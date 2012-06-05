@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - log file handling during test
         - explicitely upgrade troublemaker deps
 
 4.0.1     2012-05-16
