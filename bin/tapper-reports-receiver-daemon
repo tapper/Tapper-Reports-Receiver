@@ -6,14 +6,17 @@ use strict;
 use warnings;
 use Log::Log4perl;
 
-use Tapper::Reports::Receiver;
+use Tapper::Reports::Receiver::Daemon;
 
-use App::Daemon 'daemonize';
-$App::Daemon::as_user = "root";
-$App::Daemon::logfile = $ENV{HARNESS_ACTIVE} ? "/tmp/tapper-reports-receiver-daemon.log"
-                                             : "/var/log/tapper-reports-receiver-daemon.log";
-$App::Daemon::pidfile = "/tmp/tapper-reports-receiver-daemon.pid";
+$ENV{MX_DAEMON_STDOUT} ||= '/var/log/tapper_reports_receiver_daemon_stdout.log';
+$ENV{MX_DAEMON_STDERR} ||= '/var/log/tapper_reports_receiver_daemon_stderr.log';
 
-daemonize();
-my $port = Tapper::Config->subconfig->{report_port};
-Tapper::Reports::Receiver->new()->run($port);
+my $logconf = Tapper::Config->subconfig->{files}{log4perl_cfg};
+Log::Log4perl->init($logconf);
+
+my $receiver = new Tapper::Reports::Receiver::Daemon
+    (
+     pidfile => '/tmp/tapper-reports-receiver-daemon.pid'
+    );
+
+$receiver->run;
