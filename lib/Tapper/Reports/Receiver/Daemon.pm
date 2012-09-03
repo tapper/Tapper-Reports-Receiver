@@ -7,6 +7,7 @@ use warnings;
 
 use Tapper::Config;
 use Tapper::Reports::Receiver;
+use Log::Log4perl;
 use Moose;
 
 with 'MooseX::Daemonize';
@@ -15,10 +16,14 @@ after start => sub {
                     my $self = shift;
 
                     return unless $self->is_daemon;
-        my $port = Tapper::Config->subconfig->{report_port};
 
 
-        Tapper::Reports::Receiver->new()->run($port);
+
+                    my $logconf = Tapper::Config->subconfig->{files}{log4perl_cfg};
+                    Log::Log4perl->init($logconf);
+
+                    my $port = Tapper::Config->subconfig->{report_port};
+                    Tapper::Reports::Receiver->new()->run($port);
 };
 
 
