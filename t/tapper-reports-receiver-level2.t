@@ -12,7 +12,7 @@ use IO::Handle;
 
 use Tapper::Schema::TestTools;
 use Test::Fixture::DBIC::Schema;
-use Tapper::Reports::Receiver;
+use Tapper::Reports::Receiver::Daemon;
 use Tapper::Model 'model';
 use File::Slurp 'slurp';
 use Tapper::Config;

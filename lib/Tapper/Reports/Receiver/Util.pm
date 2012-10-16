@@ -122,7 +122,7 @@ sub get_suite {
         $suite_name ||= 'unknown';
         $suite_type ||= 'software';
 
-        my $suite = model("ReportsDB")->resultset('Suite')->search({name => $suite_name })->first;
+        my $suite = model("ReportsDB")->resultset('Suite')->search({name => $suite_name }, {rows => 1})->first;
         if (not $suite) {
                 $suite = model("ReportsDB")->resultset('Suite')->new({
                                                                       name => $suite_name,
