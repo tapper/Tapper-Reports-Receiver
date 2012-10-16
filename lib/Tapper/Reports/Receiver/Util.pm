@@ -378,7 +378,8 @@ sub process_request
                         $self->update_parsed_report_in_db( $harness->parsed_report );
                         $self->forward_to_level2_receivers();
                 } catch {
-                        # We can not use log4perl, because that might throw another exception e.g. when logfile is not writable
+                        # We can not use log4perl, because that might throw another
+                        # exception e.g. when logfile is not writable
                         openlog('Tapper-Reports-Receiver', 'nofatal, ndelay', 'local0');
                         syslog('ERROR', "Error in processing report and can not safely log with Log4perl: $_");
                         closelog();
