@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+4.1.0     2012-10-19
         - [FIX] handle exception in processing report
         - [FIX] slow first() usage
         - Log4perl with MX::Daemonize - done right
