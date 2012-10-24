@@ -2,6 +2,17 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+4.1.1     2012-10-21
+        - force dependencies
+
+4.1.0     2012-10-19
+        - [FIX] handle exception in processing report
+        - [FIX] slow first() usage
+        - Log4perl with MX::Daemonize - done right
+        - back at MooseX::Daemonize after Log4perl works
+          and App::Daemon turned out to be wrong
+        - rename USER into OWNER
+
 4.0.2     2012-06-04
         - log file handling during test
         - explicitely upgrade troublemaker deps
