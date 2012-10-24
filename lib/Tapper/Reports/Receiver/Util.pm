@@ -359,6 +359,7 @@ sub process_request
         if ($pid == 0) {
                 try {
                         $0 = "tapper-reports-receiver-".$self->report->id;
+                        $self->log->debug("Processing ".$self->report->id);
                         $SIG{USR1} = sub {
                                 local $SIG{USR1}  = 'ignore'; # make handler reentrant, don't handle signal twice
                                 my $backtrace = Devel::Backtrace->new(-start=>2, -format => '%I. %s');
@@ -381,7 +382,7 @@ sub process_request
                         # We can not use log4perl, because that might throw another
                         # exception e.g. when logfile is not writable
                         openlog('Tapper-Reports-Receiver', 'nofatal, ndelay', 'local0');
-                        syslog('ERROR', "Error in processing report and can not safely log with Log4perl: $_");
+                        syslog('ALERT', "Error in processing report and can not safely log with Log4perl: $_");
                         closelog();
                 };
                 exit 0;
