@@ -20,6 +20,15 @@ use Tapper::Config;
 use Test::More;
 use Test::Deep;
 
+use Log::Log4perl;
+
+my $string = "
+log4perl.rootLogger           = INFO, root
+log4perl.appender.root        = Log::Log4perl::Appender::Screen
+log4perl.appender.root.stderr = 1
+log4perl.appender.root.layout = SimpleLayout";
+Log::Log4perl->init(\$string);
+
 # -----------------------------------------------------------------------------------------------------------------
 construct_fixture( schema  => testrundb_schema,  fixture => 't/fixtures/testrundb/testrun_with_preconditions.yml' );
 construct_fixture( schema  => reportsdb_schema,  fixture => 't/fixtures/reportsdb/report.yml' );
