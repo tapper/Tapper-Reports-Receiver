@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - dzil pluginbundle TAPPER
 
 4.1.1     2012-10-21
         - force dependencies
