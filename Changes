@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+4.1.2     2012-11-20
         - dzil pluginbundle TAPPER
 
 4.1.1     2012-10-21
