@@ -2,3 +2,5 @@
 !.gitignore
 Tapper-Reports-Receiver-*
 Debian_CPANTS.txt
+t/tapper_schema_reportsdb_test.sqlite
+t/tapper_schema_testrundb_test.sqlite
