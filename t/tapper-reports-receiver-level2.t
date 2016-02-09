@@ -32,7 +32,7 @@ Log::Log4perl->init(\$string);
 
 # -----------------------------------------------------------------------------------------------------------------
 construct_fixture( schema  => testrundb_schema,  fixture => 't/fixtures/testrundb/testrun_with_preconditions.yml' );
-construct_fixture( schema  => reportsdb_schema,  fixture => 't/fixtures/reportsdb/report.yml' );
+construct_fixture( schema  => testrundb_schema,  fixture => 't/fixtures/testrundb/report.yml' );
 # -----------------------------------------------------------------------------------------------------------------
 
 local $ENV{TAPPER_CONFIG_FILE} = "t/tapper.cfg";
