@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - merge TestrunDB/ReportsDB
 
 4.1.3     2013-04-06
         - interpret more mime types as TAP::Archive
