@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - declare dependencies more explicit
 
 5.0.0     2016-02-15
         - merge TestrunDB/ReportsDB
