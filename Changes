@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - mark processed reports in DB
 
 5.0.1     2016-03-30
         - declare dependencies more explicit
