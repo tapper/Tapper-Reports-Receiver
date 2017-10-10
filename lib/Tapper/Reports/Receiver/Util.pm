@@ -302,7 +302,6 @@ sub update_parsed_report_in_db
         $self->create_report_sections($parsed_report);
         $self->create_report_groups($parsed_report);
         $self->create_report_comment($parsed_report);
-
 }
 
 =head2 forward_to_level2_receivers
@@ -378,6 +377,11 @@ sub process_request
 
                         $self->update_parsed_report_in_db( $harness->parsed_report );
                         $self->forward_to_level2_receivers();
+
+                        # mark as processed
+                        $self->report->tap->processed(1);
+                        $self->report->tap->update;
+
                 } catch {
                         # We can not use log4perl, because that might throw another
                         # exception e.g. when logfile is not writable
