@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+5.0.2     2024-12-02
         - mark processed reports in DB
 
 5.0.1     2016-03-30
