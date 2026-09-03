@@ -376,11 +376,11 @@ sub process_request
                         $harness->evaluate_report();
 
                         $self->update_parsed_report_in_db( $harness->parsed_report );
-                        $self->forward_to_level2_receivers();
-
-                        # mark as processed
                         $self->report->tap->processed(1);
                         $self->report->tap->update;
+
+                        # forward to potential further outside processing
+                        $self->forward_to_level2_receivers();
 
                 } catch {
                         # We can not use log4perl, because that might throw another
